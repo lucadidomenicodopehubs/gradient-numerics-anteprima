@@ -631,9 +631,41 @@ img{ max-width: 100%; height: auto; display: block; }
 .piega{ padding-top: var(--s8); padding-bottom: var(--sezione); }
 .piega-griglia{ display: grid; gap: var(--s7); align-items: start; }
 @media (min-width: 1000px){
-  .piega-griglia{ grid-template-columns: minmax(0, 1.02fr) minmax(0, 1fr); gap: var(--s8); }
+  .piega-griglia{ grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr); gap: var(--s7); }
 }
-.piega h1{ max-width: 15ch; }
+@media (max-width: 999px){
+  .piega-griglia > div:first-child{ display: contents; }
+  .piega-griglia{ gap: var(--s5); }
+  .piega-griglia h1{ order: 1; }
+  .piega-griglia .mosaico{ order: 2; }
+  .piega-griglia .sommario{ order: 3; margin-top: var(--s2); }
+  .piega-griglia .azioni{ order: 4; }
+  .piega-griglia .nota-azione{ order: 5; }
+}
+.piega h1{ max-width: 21ch; font-size: clamp(2.125rem, 1.6rem + 2vw, 3.125rem); }
+.mosaico{
+  display: grid; gap: 1px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  background: var(--riga);
+  border: 1px solid var(--riga);
+}
+@media (min-width: 560px){ .mosaico{ grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.cella{ background: var(--tavola); display: flex; flex-direction: column; }
+.cella img{
+  width: 100%; aspect-ratio: 16 / 10; object-fit: contain;
+  background: var(--tavola);
+}
+.cella figcaption{
+  padding: var(--s2) var(--s3); border-top: 1px solid var(--riga-2);
+  font-family: var(--f-mono); font-size: 0.6875rem; line-height: 1.45;
+  color: var(--inchiostro-2); margin-top: auto;
+}
+.cella figcaption b{ display: block; font-weight: 500; color: var(--inchiostro); letter-spacing: .02em; }
+.cella.scura, .cella.scura img{ background: #1a1310; }
+.cella.scura figcaption{ background: var(--tavola); }
+.cella-quota{ color: var(--quota); display: grid; place-items: center; padding: var(--s3); }
+.cella-quota svg{ width: 100%; height: auto; }
+.cella-quota text{ font-family: var(--f-mono); fill: currentColor; }
 .quota-titolo{
   margin-top: var(--s6); max-width: 30rem;
   display: block; width: 100%; height: auto; color: var(--quota);
@@ -641,8 +673,8 @@ img{ max-width: 100%; height: auto; display: block; }
 .quota-titolo text{ font-family: var(--f-mono); font-size: 13px; fill: currentColor; }
 .quota-titolo .filo{ stroke: currentColor; stroke-width: 1; }
 .sommario{
-  margin-top: var(--s6); font-size: var(--t-1); line-height: 1.5;
-  color: var(--inchiostro-2); max-width: 46ch;
+  margin-top: var(--s5); font-size: var(--t-0); line-height: 1.55;
+  color: var(--inchiostro-2); max-width: 48ch;
 }
 .azioni{ margin-top: var(--s7); display: flex; flex-wrap: wrap; gap: var(--s3); }
 .nota-azione{
@@ -759,8 +791,16 @@ img{ max-width: 100%; height: auto; display: block; }
 .js .piega .sommario{ animation: sali 520ms var(--ease-mecc) 300ms both; }
 .js .piega .azioni{ animation: sali 520ms var(--ease-mecc) 380ms both; }
 .js .piega .nota-azione{ animation: sali 420ms var(--ease-mecc) 460ms both; }
-.js .piega .tavola{ animation: apri 560ms var(--ease-tratto) 160ms both; transform-origin: top center; }
-.js .piega .tavola > *{ animation: sali 420ms var(--ease-mecc) 420ms both; }
+.js .piega .mosaico{ animation: apri 520ms var(--ease-tratto) 140ms both; transform-origin: top center; }
+.js .piega .mosaico .cella{ animation: sali 380ms var(--ease-mecc) both; }
+.js .piega .mosaico .cella:nth-child(1){ animation-delay: 300ms; }
+.js .piega .mosaico .cella:nth-child(2){ animation-delay: 350ms; }
+.js .piega .mosaico .cella:nth-child(3){ animation-delay: 400ms; }
+.js .piega .mosaico .cella:nth-child(4){ animation-delay: 450ms; }
+.js .piega .mosaico .cella:nth-child(5){ animation-delay: 500ms; }
+.js .piega .mosaico .cella:nth-child(6){ animation-delay: 560ms; }
+.js .cella-quota .filo path{ stroke-dasharray: 1; stroke-dashoffset: 1; animation: tira 420ms var(--ease-mecc) 700ms both; }
+.js .cella-quota path[fill], .js .cella-quota rect, .js .cella-quota text{ animation: sali 280ms var(--ease-mecc) 1000ms both; }
 .js .piega .conti .conto{ animation: sali 420ms var(--ease-mecc) both; }
 .js .piega .conti .conto:nth-child(1){ animation-delay: 560ms; }
 .js .piega .conti .conto:nth-child(2){ animation-delay: 620ms; }
@@ -1063,10 +1103,11 @@ table.dati tr.rilievo td{ color: var(--quota); }
       <span class="nome">Gradient Numerics</span>
     </a>
     <nav class="nav-testata" aria-label="Sezioni">
-      <a class="voce" href="#problema"><span class="indice mono">01</span>Il problema</a>
-      <a class="voce" href="#validazione"><span class="indice mono">02</span>Validazione</a>
-      <a class="voce" href="#servizi"><span class="indice mono">03</span>Cosa calcolo</a>
-      <a class="voce" href="#firma"><span class="indice mono">06</span>Chi firma</a>
+      <a class="voce" href="#servizi">Cosa calcolo</a>
+      <a class="voce" href="#casi">I casi</a>
+      <a class="voce" href="#validazione">Validazione</a>
+      <a class="voce" href="#ingaggio">Tempi</a>
+      <a class="voce" href="#firma">Chi firma</a>
       <details class="lingue">
         <summary aria-label="Scegli la lingua"><span class="mono">IT</span></summary>
         <ul><li><a href="/" hreflang="it" lang="it" aria-current="true"><span class="mono">IT</span> Italiano</a></li></ul>
@@ -1085,25 +1126,11 @@ table.dati tr.rilievo td{ color: var(--quota); }
     <div class="piega-griglia">
       <div>
         <h1 id="t-piega" data-titolo>
-          <span class="riga-mask"><span>Il risultato,</span></span>
-          <span class="riga-mask"><span>e di quanto sbaglia.</span></span>
+          <span class="riga-mask"><span>Calcolo fluidi, calore e strutture.</span></span>
+          <span class="riga-mask"><span>E dichiaro di quanto sbaglio.</span></span>
         </h1>
 
-        <!-- la quota misura la cosa che vendiamo: la distanza dalla misura -->
-        <svg class="quota-titolo" viewBox="0 0 460 62" role="img" aria-label="Linea di quota che misura lo scarto dichiarato: undici per cento dalla misura sperimentale sul benchmark FDA a Reynolds 6500." data-quota>
-          <g class="filo" fill="none" stroke-linecap="butt">
-            <path d="M8 6 V34" pathLength="1"/>
-            <path d="M452 6 V34" pathLength="1"/>
-            <path d="M8 22 H452" class="tirata" pathLength="1"/>
-          </g>
-          <path d="M8 22 l9 -4 v8 z" fill="currentColor"/>
-          <path d="M452 22 l-9 -4 v8 z" fill="currentColor"/>
-          <rect x="196" y="8" width="68" height="28" fill="var(--carta)"/>
-          <text x="230" y="28" text-anchor="middle" font-weight="500">Δ 11%</text>
-          <text x="8" y="54" fill="var(--inchiostro-2)" font-size="12">scarto dichiarato dalla misura sperimentale, benchmark FDA, Re 6500</text>
-        </svg>
-
-        <p class="sommario" data-anima="su">Calcolo flussi, scambio termico, strutture e aeroacustica su geometrie reali. Per ogni caso dichiaro il modello che ho usato, la griglia su cui ho girato, e la distanza fra il numero che consegno e una misura.</p>
+        <p class="sommario" data-anima="su">Simulazione numerica su geometrie vere: flussi, scambio termico, resistenza strutturale, aeroacustica. Per ogni caso dichiaro il modello che ho usato, la griglia su cui ho girato, e la distanza fra il numero che consegno e una misura sperimentale.</p>
         <div class="azioni" data-anima="su">
           <a class="btn btn-primario" href="#manda" data-cta="piega">Manda la geometria</a>
           <a class="btn btn-secondario" href="#validazione">Leggi la validazione</a>
@@ -1111,21 +1138,49 @@ table.dati tr.rilievo td{ color: var(--quota); }
         <p class="nota-azione">Rispondo io, non un modulo.</p>
       </div>
 
-      <figure class="tavola" data-anima="tavola">
-        <figcaption class="tavola-testa">
-          <span class="sigla">TAV. 01</span>
-          <span class="oggetto">Carena tipo DARPA SUBOFF</span>
-          <span class="dato">p · OpenFOAM 13 · ParaView</span>
-        </figcaption>
-        <div class="tavola-corpo stretta">
-          <div class="barra-colore" data-barra></div>
-          <img src="assets/fig-suboff-3q-1000.webp"
-               srcset="assets/fig-suboff-3q-640.webp 640w, assets/fig-suboff-3q-1000.webp 1000w, assets/fig-suboff-3q.webp 1599w"
-               sizes="(min-width: 1000px) 40vw, 92vw"
-               alt="Carena sottomarina di riferimento vista di tre quarti dall'alto, colorata secondo il campo di pressione superficiale: giallo sulla prua, verde acqua lungo la fiancata." width="1599" height="777" loading="eager" decoding="async" fetchpriority="high">
+      <!-- il mosaico: cosa calcoliamo, visto prima di essere letto -->
+      <div class="mosaico" data-anima="mosaico">
+        <figure class="cella">
+          <img src="assets/suboff-e-640.webp" alt="Carena sottomarina di riferimento, campo di pressione in scala viridis." width="640" height="360"
+               fetchpriority="high" decoding="async">
+          <figcaption><b>Carena</b> campo di pressione</figcaption>
+        </figure>
+        <figure class="cella">
+          <img src="assets/boxwing-b-640.webp" alt="Velivolo senza pilota ad ala chiusa, campo di pressione sulla superficie." width="640" height="360"
+               loading="eager" decoding="async">
+          <figcaption><b>Ala chiusa</b> campo di pressione</figcaption>
+        </figure>
+        <figure class="cella">
+          <img src="assets/uav-a-640.webp" alt="Velivolo ad ala fissa, modulo dello sforzo di taglio a parete sulla superficie." width="640" height="360"
+               loading="eager" decoding="async">
+          <figcaption><b>Ala fissa</b> attrito a parete</figcaption>
+        </figure>
+        <figure class="cella">
+          <img src="assets/razzo-c-640.webp" alt="Corpo affusolato con impennaggi, coefficiente di pressione." width="640" height="360"
+               loading="eager" decoding="async">
+          <figcaption><b>Corpo affusolato</b> coefficiente di pressione</figcaption>
+        </figure>
+        <figure class="cella scura">
+          <img src="assets/urto-c-640.webp" alt="Piano di contorno del campo di velocità con le onde oblique attorno a un corpo veloce." width="640" height="360"
+               loading="eager" decoding="async">
+          <figcaption><b>Comprimibile</b> onde d'urto, 489 m/s</figcaption>
+        </figure>
+        <div class="cella cella-quota">
+          <svg viewBox="0 0 260 110" role="img" aria-label="Linea di quota che misura lo scarto dichiarato: undici per cento dalla misura sperimentale sul benchmark FDA a Reynolds 6500.">
+            <g class="filo" fill="none" stroke="currentColor" stroke-width="1">
+              <path d="M14 22 V50" pathLength="1"/>
+              <path d="M246 22 V50" pathLength="1"/>
+              <path d="M14 36 H246" class="tirata" pathLength="1"/>
+            </g>
+            <path d="M14 36 l9 -4 v8 z" fill="currentColor"/>
+            <path d="M246 36 l-9 -4 v8 z" fill="currentColor"/>
+            <rect x="95" y="22" width="70" height="28" fill="var(--tavola)"/>
+            <text x="130" y="43" text-anchor="middle" font-size="19" font-weight="500">Δ 11%</text>
+            <text x="14" y="72" font-size="11" fill="var(--inchiostro-2)">scarto dichiarato dalla misura</text>
+            <text x="14" y="90" font-size="11" fill="var(--inchiostro-2)">benchmark FDA, Re 6500</text>
+          </svg>
         </div>
-        <figcaption><b>TAV. 01</b> Campo di pressione sulla superficie, scala viridis da meno quattro a quattro. Il caso per intero, con setup e residui, sta nella sezione 02.</figcaption>
-      </figure>
+      </div>
     </div>
 
     <div class="conti" data-anima="conti">
