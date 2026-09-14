@@ -1,0 +1,1757 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gradient Numerics, consulenza CFD e FEM a Genova</title>
+<meta name="description" content="Simulazione di fluidi, strutture e termica su geometrie reali. Per ogni caso dichiaro il modello, la griglia e lo scarto dalla misura sperimentale.">
+<meta name="theme-color" content="#EFF1F1">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Gradient Numerics, consulenza CFD e FEM a Genova">
+<meta property="og:description" content="Sullo stesso condotto il solo modello di turbolenza sposta il risultato del 39%. Qui c'è il caso di validazione pubblicato per intero, e cinque casi calcolati.">
+<meta property="og:locale" content="it_IT">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="caratteri/ibm-plex-sans-condensed-600-normal-latin.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="caratteri/ibm-plex-sans-400-normal-latin.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="caratteri/ibm-plex-mono-500-normal-latin.woff2">
+<style>
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(caratteri/ibm-plex-mono-400-normal-cyrillic-ext.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(caratteri/ibm-plex-mono-400-normal-cyrillic.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(caratteri/ibm-plex-mono-400-normal-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(caratteri/ibm-plex-mono-400-normal-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(caratteri/ibm-plex-mono-500-normal-cyrillic-ext.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(caratteri/ibm-plex-mono-500-normal-cyrillic.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(caratteri/ibm-plex-mono-500-normal-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(caratteri/ibm-plex-mono-500-normal-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/ibm-plex-sans-400-normal-cyrillic-ext.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/ibm-plex-sans-400-normal-cyrillic.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/ibm-plex-sans-400-normal-greek.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/ibm-plex-sans-400-normal-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/ibm-plex-sans-400-normal-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/ibm-plex-sans-400-normal-cyrillic-ext.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/ibm-plex-sans-400-normal-cyrillic.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/ibm-plex-sans-400-normal-greek.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/ibm-plex-sans-400-normal-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/ibm-plex-sans-400-normal-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'IBM Plex Sans Condensed';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(caratteri/ibm-plex-sans-condensed-600-normal-cyrillic-ext.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'IBM Plex Sans Condensed';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(caratteri/ibm-plex-sans-condensed-600-normal-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'IBM Plex Sans Condensed';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(caratteri/ibm-plex-sans-condensed-600-normal-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/noto-sans-400-normal-cyrillic-ext.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/noto-sans-400-normal-cyrillic.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/noto-sans-400-normal-greek-ext.woff2) format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/noto-sans-400-normal-greek.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/noto-sans-400-normal-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/noto-sans-400-normal-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/noto-sans-400-normal-cyrillic-ext.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/noto-sans-400-normal-cyrillic.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/noto-sans-400-normal-greek-ext.woff2) format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/noto-sans-400-normal-greek.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/noto-sans-400-normal-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/noto-sans-400-normal-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Noto Sans Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/noto-sans-mono-400-normal-cyrillic-ext.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Noto Sans Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/noto-sans-mono-400-normal-cyrillic.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Noto Sans Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/noto-sans-mono-400-normal-greek-ext.woff2) format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+@font-face {
+  font-family: 'Noto Sans Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/noto-sans-mono-400-normal-greek.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'Noto Sans Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/noto-sans-mono-400-normal-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Noto Sans Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/noto-sans-mono-400-normal-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Noto Sans Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/noto-sans-mono-400-normal-cyrillic-ext.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Noto Sans Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/noto-sans-mono-400-normal-cyrillic.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Noto Sans Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/noto-sans-mono-400-normal-greek-ext.woff2) format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+@font-face {
+  font-family: 'Noto Sans Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/noto-sans-mono-400-normal-greek.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'Noto Sans Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/noto-sans-mono-400-normal-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Noto Sans Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/noto-sans-mono-400-normal-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Noto Serif Display';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/noto-serif-display-400-normal-cyrillic-ext.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Noto Serif Display';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/noto-serif-display-400-normal-cyrillic.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Noto Serif Display';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/noto-serif-display-400-normal-greek-ext.woff2) format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+@font-face {
+  font-family: 'Noto Serif Display';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/noto-serif-display-400-normal-greek.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'Noto Serif Display';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/noto-serif-display-400-normal-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Noto Serif Display';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(caratteri/noto-serif-display-400-normal-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+:root{
+  --f-titolo: "IBM Plex Sans Condensed", "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --f-testo:  "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --f-mono:   "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --carta:        #EFF1F1;
+  --carta-2:      #E4E7E7;
+  --tavola:       #FBFCFC;
+  --inchiostro:   #14191B;
+  --inchiostro-2: #4B5457;
+  --inchiostro-3: #798285;   
+  --riga:         #C7CDCE;
+  --riga-2:       #DDE2E2;
+  --quota:        #BC3226;
+  --quota-viva:   #D94B39;
+  --ok:           #1F6F4A;
+  --t--1: clamp(0.8125rem, 0.79rem + 0.11vw, 0.875rem);
+  --t-0:  clamp(1rem, 0.97rem + 0.14vw, 1.0625rem);
+  --t-1:  clamp(1.1875rem, 1.13rem + 0.28vw, 1.375rem);
+  --t-2:  clamp(1.5rem, 1.36rem + 0.68vw, 1.9375rem);
+  --t-3:  clamp(1.875rem, 1.62rem + 1.25vw, 2.625rem);
+  --t-4:  clamp(2.375rem, 1.9rem + 2.35vw, 3.75rem);
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px;
+  --s6:32px; --s7:48px; --s8:64px; --s9:96px; --s10:128px;
+  --sezione: var(--s9);
+  --misura: 68ch;
+  --scatto: 120ms;
+  --tratto: 420ms;
+  --ease-mecc: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-tratto: cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (min-width: 900px){ :root{ --sezione: var(--s10); } }
+*, *::before, *::after{ box-sizing: border-box; }
+html{
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: 84px;
+}
+:target, section[id]{ scroll-margin-top: 84px; }
+@media (prefers-reduced-motion: reduce){ html{ scroll-behavior: auto; } }
+body{
+  margin: 0;
+  background: var(--carta);
+  color: var(--inchiostro);
+  font-family: var(--f-testo);
+  font-size: var(--t-0);
+  line-height: 1.62;
+  font-synthesis-weight: none;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+h1, h2, h3{
+  font-family: var(--f-titolo);
+  font-weight: 600;
+  line-height: 1.04;
+  letter-spacing: -0.012em;
+  text-wrap: balance;
+  margin: 0;
+}
+h1{ font-size: var(--t-4); }
+h2{ font-size: var(--t-3); }
+h3{ font-size: var(--t-1); letter-spacing: -0.006em; }
+p{ margin: 0; text-wrap: pretty; max-width: var(--misura); }
+figure, blockquote, dl, dd, ul, ol{ margin: 0; }
+.piega-griglia > *, .due-colonne > *, .caso-corpo > *, .capacita > *, .scala > *,
+.consegna > *, .cartiglio-griglia > *, .viste > *, .conti > *{ min-width: 0; }
+fieldset{ min-width: 0; }
+a{ color: inherit; text-underline-offset: 0.16em; text-decoration-thickness: 1px; }
+a:hover{ text-decoration-color: var(--quota); }
+img{ max-width: 100%; height: auto; display: block; }
+:where(a, button, input, textarea, summary, [tabindex]):focus-visible{
+  outline: 2px solid var(--quota);
+  outline-offset: 2px;
+  border-radius: 1px;
+}
+.mono{
+  font-family: var(--f-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "zero" 1;
+}
+.salta{
+  position: absolute; left: var(--s4); top: -100px; z-index: 100;
+  background: var(--inchiostro); color: var(--carta);
+  padding: var(--s3) var(--s5);
+  transition: top var(--scatto) var(--ease-mecc);
+}
+.salta:focus{ top: var(--s4); }
+.guida{ width: min(1240px, 100% - var(--s7)); margin-inline: auto; }
+@media (max-width: 700px){ .guida{ width: min(1240px, 100% - var(--s5)); } }
+@media (max-width: 760px){ .reticolo{ display: none; } }
+.reticolo{
+  position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background-image:
+    linear-gradient(to right, var(--riga-2) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--riga-2) 1px, transparent 1px);
+  background-size: 88px 88px;
+  opacity: .45;
+  mask-image: radial-gradient(60vmax 44vmax at 88% 2%, #000 0%, transparent 72%);
+}
+.occhiello{
+  font-family: var(--f-mono); font-size: var(--t--1); font-weight: 500;
+  letter-spacing: 0.16em; text-transform: uppercase; color: var(--inchiostro-2);
+  margin: 0 0 var(--s5);
+  display: flex; align-items: center; gap: var(--s3);
+}
+.occhiello::after{
+  content: ""; flex: 1; height: 1px; background: var(--riga);
+}
+@media (min-width: 760px){ .occhiello{ white-space: nowrap; } }
+@media (max-width: 759px){ .occhiello{ flex-wrap: wrap; } .occhiello::after{ display: none; } }
+.numero-sezione{
+  font-family: var(--f-mono); font-size: var(--t--1); font-weight: 500;
+  color: var(--quota); letter-spacing: .1em;
+}
+.testata{
+  position: sticky; top: 0; z-index: 40;
+  background: color-mix(in oklch, var(--carta) 88%, transparent);
+  backdrop-filter: saturate(130%) blur(8px);
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--scatto) var(--ease-mecc);
+}
+.testata[data-scrollata="si"]{ border-bottom-color: var(--riga); }
+.testata .guida{ display: flex; align-items: center; gap: var(--s5); padding-block: var(--s3); }
+.marchio{ display: flex; align-items: center; gap: var(--s3); text-decoration: none; }
+.marchio svg{ display: block; height: 26px; width: auto; }
+.marchio .nome{
+  font-family: var(--f-mono); font-size: 0.75rem; font-weight: 500;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--inchiostro);
+  padding-left: var(--s3); border-left: 1px solid var(--riga);
+}
+@media (max-width: 560px){ .marchio .nome{ display: none; } }
+.nav-testata{ margin-left: auto; display: flex; align-items: center; gap: var(--s5); }
+.nav-testata a:not(.btn){
+  font-family: var(--f-mono); font-size: var(--t--1);
+  color: var(--inchiostro-2); text-decoration: none;
+  transition: color var(--scatto) var(--ease-mecc);
+}
+.nav-testata a:not(.btn):hover{ color: var(--inchiostro); }
+.nav-testata a:not(.btn) .indice{ color: var(--inchiostro-2); margin-right: var(--s2); }
+@media (max-width: 900px){ .nav-testata .voce{ display: none; } }
+@media (max-width: 620px){
+  .testata .guida{ gap: var(--s3); }
+  .nav-testata{ gap: var(--s3); }
+  .nav-testata .btn{ font-size: 0.6875rem; letter-spacing: .04em; padding: var(--s2) var(--s3); min-height: 38px; }
+  .lingue summary{ min-height: 38px; padding: var(--s2); }
+}
+.btn{
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--s2);
+  font-family: var(--f-mono); font-size: var(--t--1); font-weight: 500;
+  letter-spacing: .06em; text-transform: uppercase;
+  padding: var(--s3) var(--s5); min-height: 46px;
+  border: 1px solid var(--inchiostro); border-radius: 0;
+  cursor: pointer; text-decoration: none; white-space: nowrap;
+  transition: transform var(--scatto) var(--ease-mecc),
+              background-color var(--scatto) var(--ease-mecc),
+              color var(--scatto) var(--ease-mecc),
+              border-color var(--scatto) var(--ease-mecc);
+}
+.btn-primario{ background: var(--quota); color: #fff; border-color: var(--quota); }
+.btn-primario:hover{ background: var(--quota-viva); border-color: var(--quota-viva); }
+.btn-primario:active{ transform: translateY(1px); }
+.btn-secondario{ background: transparent; color: var(--inchiostro); }
+.btn-secondario:hover{ background: var(--inchiostro); color: var(--carta); }
+.btn-secondario:active{ transform: translateY(1px); }
+.btn[disabled]{ opacity: .45; cursor: not-allowed; transform: none; }
+.piega{ padding-top: var(--s8); padding-bottom: var(--sezione); }
+.piega-griglia{ display: grid; gap: var(--s7); align-items: start; }
+@media (min-width: 1000px){
+  .piega-griglia{ grid-template-columns: minmax(0, 1.02fr) minmax(0, 1fr); gap: var(--s8); }
+}
+.piega h1{ max-width: 15ch; }
+.quota-titolo{
+  margin-top: var(--s6); max-width: 30rem;
+  display: block; width: 100%; height: auto; color: var(--quota);
+}
+.quota-titolo text{ font-family: var(--f-mono); font-size: 13px; fill: currentColor; }
+.quota-titolo .filo{ stroke: currentColor; stroke-width: 1; }
+.sommario{
+  margin-top: var(--s6); font-size: var(--t-1); line-height: 1.5;
+  color: var(--inchiostro-2); max-width: 46ch;
+}
+.azioni{ margin-top: var(--s7); display: flex; flex-wrap: wrap; gap: var(--s3); }
+.nota-azione{
+  margin-top: var(--s3); font-family: var(--f-mono); font-size: var(--t--1);
+  color: var(--inchiostro-2);
+}
+.conti{
+  margin-top: var(--s8); border-top: 1px solid var(--riga);
+  display: grid; grid-template-columns: repeat(2, 1fr);
+}
+@media (min-width: 800px){ .conti{ grid-template-columns: repeat(4, 1fr); } }
+.conto{
+  padding: var(--s5) var(--s5) var(--s5) 0;
+  border-right: 1px solid var(--riga-2);
+}
+.conto:last-child{ border-right: 0; }
+.conto b{
+  display: block; font-family: var(--f-mono); font-size: var(--t-2);
+  font-weight: 500; font-variant-numeric: tabular-nums; letter-spacing: -0.02em;
+}
+.conto span{
+  display: block; margin-top: var(--s2);
+  font-size: var(--t--1); color: var(--inchiostro-2); max-width: 22ch;
+}
+.tavola{
+  background: var(--tavola);
+  border: 1px solid var(--riga);
+  position: relative;
+}
+.tavola-testa{
+  display: flex; align-items: baseline; gap: var(--s4); flex-wrap: wrap;
+  padding: var(--s3) var(--s4);
+  border-bottom: 1px solid var(--riga);
+  font-family: var(--f-mono); font-size: 0.75rem; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--inchiostro-2);
+}
+.tavola-testa .sigla{ color: var(--quota); font-weight: 500; }
+.tavola-testa .oggetto{ color: var(--inchiostro); letter-spacing: .04em; text-transform: none; }
+.tavola-testa .dato{ color: var(--inchiostro-2); text-transform: none; letter-spacing: .04em; }
+@media (min-width: 700px){ .tavola-testa .dato{ margin-left: auto; } }
+.tavola-corpo{ padding: var(--s4); }
+.tavola-corpo.stretta{ padding: 0; }
+.barra-colore{
+  height: 5px; width: 100%; transform-origin: left center;
+  background: linear-gradient(90deg, #440154, #3b528b, #21918c, #5ec962, #fde725);
+}
+[data-mappa="arcobaleno"] .barra-colore{
+  background: linear-gradient(90deg, #270D35, #476EE3, #29BCE8, #3DF392, #ABFB3C, #F2CA3F, #F5741F, #C52703);
+}
+.tavola figcaption{
+  padding: var(--s3) var(--s4); border-top: 1px solid var(--riga-2);
+  font-size: var(--t--1); color: var(--inchiostro-2); max-width: none;
+}
+.tavola figcaption b{ font-family: var(--f-mono); font-weight: 500; color: var(--inchiostro); }
+.tavola::before, .tavola::after{
+  content: ""; position: absolute; width: 7px; height: 7px; pointer-events: none;
+  border-color: var(--inchiostro-3);
+}
+.tavola::before{ top: -1px; left: -1px; border-top: 1px solid; border-left: 1px solid; }
+.tavola::after{ bottom: -1px; right: -1px; border-bottom: 1px solid; border-right: 1px solid; }
+.fascia{ padding-block: var(--sezione); }
+.fascia-alt{ background: var(--carta-2); }
+.testa-sezione{ display: flex; align-items: baseline; gap: var(--s4); }
+.testa-sezione h2{ max-width: 22ch; }
+.intro-sezione{ margin-top: var(--s5); font-size: var(--t-1); color: var(--inchiostro-2); }
+.cartiglio{ border-top: 1px solid var(--inchiostro); }
+.cartiglio .guida{ padding-block: 0; }
+.cartiglio-griglia{
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  border-left: 1px solid var(--riga);
+}
+@media (min-width: 760px){ .cartiglio-griglia{ grid-template-columns: repeat(4, 1fr); } }
+.casella{
+  padding: var(--s4);
+  border-right: 1px solid var(--riga); border-bottom: 1px solid var(--riga);
+  min-height: 92px;
+}
+.casella dt{
+  font-family: var(--f-mono); font-size: 0.6875rem; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--inchiostro-2);
+}
+.casella dd{ margin: var(--s2) 0 0; font-size: var(--t--1); color: var(--inchiostro); }
+.casella dd a{ color: var(--inchiostro); }
+.casella.larga{ grid-column: 1 / -1; }
+@media (min-width: 760px){ .casella.larga{ grid-column: span 2; } }
+.casella .fonti{ font-size: 0.8125rem; color: var(--inchiostro-2); max-width: none; }
+.segnaposto{
+  font-family: var(--f-mono); font-size: 0.8125rem; font-weight: 500;
+  background: repeating-linear-gradient(45deg, #F6E58D, #F6E58D 6px, #F2DC6A 6px, #F2DC6A 12px);
+  color: #4A3F00; padding: 1px 6px; border: 1px solid #D6C24A;
+}
+.avviso-segnaposto{
+  margin-top: var(--s5); padding: var(--s4);
+  border: 1px dashed #D6C24A; background: #FBF7DF;
+  display: flex; gap: var(--s3); align-items: flex-start;
+  font-size: var(--t--1); color: #4A3F00; max-width: none;
+}
+.riga-mask{ display: block; overflow: hidden; padding-bottom: 0.14em; margin-bottom: -0.14em; }
+.riga-mask > span{ display: block; }
+@keyframes rivela{ from{ transform: translateY(108%); } to{ transform: none; } }
+@keyframes sali{ from{ opacity: 0; transform: translateY(14px); } to{ opacity: 1; transform: none; } }
+@keyframes tira{ from{ stroke-dashoffset: 1; } to{ stroke-dashoffset: 0; } }
+@keyframes apri{ from{ opacity: 0; transform: scaleY(0.985); } to{ opacity: 1; transform: none; } }
+.js [data-titolo] .riga-mask > span{ animation: rivela 760ms var(--ease-tratto) both; }
+.js [data-titolo] .riga-mask:nth-child(2) > span{ animation-delay: 80ms; }
+.js .quota-titolo .filo path{
+  stroke-dasharray: 1; stroke-dashoffset: 1;
+  animation: tira var(--tratto) var(--ease-mecc) 260ms both;
+}
+.js .quota-titolo .filo path.tirata{ animation-delay: 380ms; animation-duration: 520ms; }
+.js .quota-titolo path[fill], .js .quota-titolo rect, .js .quota-titolo text{
+  animation: sali 300ms var(--ease-mecc) 760ms both;
+}
+.js .piega .sommario{ animation: sali 520ms var(--ease-mecc) 300ms both; }
+.js .piega .azioni{ animation: sali 520ms var(--ease-mecc) 380ms both; }
+.js .piega .nota-azione{ animation: sali 420ms var(--ease-mecc) 460ms both; }
+.js .piega .tavola{ animation: apri 560ms var(--ease-tratto) 160ms both; transform-origin: top center; }
+.js .piega .tavola > *{ animation: sali 420ms var(--ease-mecc) 420ms both; }
+.js .piega .conti .conto{ animation: sali 420ms var(--ease-mecc) both; }
+.js .piega .conti .conto:nth-child(1){ animation-delay: 560ms; }
+.js .piega .conti .conto:nth-child(2){ animation-delay: 620ms; }
+.js .piega .conti .conto:nth-child(3){ animation-delay: 680ms; }
+.js .piega .conti .conto:nth-child(4){ animation-delay: 740ms; }
+.citazione{
+  margin: var(--s7) 0 0; padding-left: var(--s5);
+  border-left: 2px solid var(--quota); max-width: 58ch;
+}
+.citazione p{
+  font-family: var(--f-titolo); font-size: var(--t-2); line-height: 1.2;
+  font-weight: 600; letter-spacing: -0.01em;
+}
+.citazione cite{
+  display: block; margin-top: var(--s3);
+  font-family: var(--f-mono); font-size: var(--t--1); font-style: normal;
+  color: var(--inchiostro-2); letter-spacing: .04em;
+}
+.lingue{ position: relative; }
+.lingue summary{
+  list-style: none; cursor: pointer;
+  display: inline-flex; align-items: center; gap: var(--s2);
+  min-height: 40px; padding: var(--s2) var(--s3);
+  border: 1px solid var(--riga);
+  font-family: var(--f-mono); font-size: var(--t--1); color: var(--inchiostro-2);
+  transition: border-color var(--scatto) var(--ease-mecc), color var(--scatto) var(--ease-mecc);
+}
+.lingue summary::-webkit-details-marker{ display: none; }
+.lingue summary::after{
+  content: ""; width: 5px; height: 5px;
+  border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+}
+.lingue summary:hover, .lingue[open] summary{ border-color: var(--inchiostro); color: var(--inchiostro); }
+.lingue > ul{
+  position: absolute; right: 0; top: calc(100% + var(--s2)); z-index: 60;
+  margin: 0; padding: var(--s2); list-style: none;
+  width: max-content; max-width: min(92vw, 420px);
+  max-height: min(70vh, 460px); overflow-y: auto; overscroll-behavior: contain;
+  display: grid; grid-template-columns: repeat(2, minmax(8.5rem, 1fr)); gap: 0 var(--s4);
+  background: var(--tavola); border: 1px solid var(--riga);
+  box-shadow: 0 24px 48px -32px rgba(20,25,27,.45);
+}
+@media (max-width: 520px){ .lingue > ul{ grid-template-columns: 1fr; } }
+.lingue li a{
+  display: flex; align-items: baseline; gap: var(--s3);
+  padding: var(--s2) var(--s3);
+  font-size: var(--t--1); color: var(--inchiostro-2); text-decoration: none;
+}
+.lingue li a .mono{ font-size: 0.6875rem; color: var(--inchiostro-2); min-width: 2ch; }
+.lingue li a:hover{ background: var(--carta-2); color: var(--inchiostro); }
+.lingue li a[aria-current]{ color: var(--inchiostro); box-shadow: inset 2px 0 0 var(--quota); }
+.lingue-piede ul{
+  margin: 0; padding: 0; list-style: none;
+  display: flex; flex-wrap: wrap; gap: var(--s1) var(--s3);
+}
+.lingue-piede li a{ font-size: 0.8125rem; color: var(--inchiostro-2); text-decoration: none; }
+.lingue-piede li a:hover{ color: var(--inchiostro); }
+.lingue-piede li a[aria-current]{ color: var(--quota); }
+.lingue-piede li a .mono{ display: none; }
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{
+    animation-duration: .001ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    transition-delay: 0s !important;
+  }
+}
+.due-colonne{ display: grid; gap: var(--s7); align-items: start; }
+@media (min-width: 1000px){ .due-colonne{ grid-template-columns: minmax(0,1fr) minmax(0,1.1fr); gap: var(--s8); } }
+table.dati{ width: 100%; border-collapse: collapse; font-size: var(--t--1); }
+table.dati th, table.dati td{
+  text-align: left; vertical-align: baseline;
+  padding: var(--s3) var(--s4); border-bottom: 1px solid var(--riga-2);
+}
+table.dati th{ font-weight: 500; color: var(--inchiostro-2); width: 45%; }
+table.dati td{ font-family: var(--f-mono); color: var(--inchiostro); }
+table.dati tr.rilievo th, table.dati tr.rilievo td{
+  border-top: 1px solid var(--inchiostro); border-bottom: 1px solid var(--inchiostro);
+  font-weight: 500;
+}
+table.dati tr.rilievo td{ color: var(--quota); }
+.tabella-avvolta{ overflow-x: auto; }
+.limite{
+  margin-top: var(--s6); padding: var(--s5);
+  border-left: 2px solid var(--quota); background: var(--tavola);
+}
+.limite p{ max-width: 62ch; }
+.limite b{ font-family: var(--f-mono); font-size: var(--t--1); letter-spacing: .06em;
+  text-transform: uppercase; color: var(--quota); display: block; margin-bottom: var(--s2); }
+.ugello-scena{ position: relative; width: 100%; aspect-ratio: 21 / 9; background: var(--tavola); }
+@media (max-width: 760px){ .ugello-scena{ aspect-ratio: 4 / 3; } }
+.ugello-poster{ position: absolute; inset: 0; pointer-events: none; color: var(--inchiostro); }
+.ugello-poster svg{ width: 100%; height: 100%; display: block; }
+#ugello-canvas{
+  position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; display: block;
+  opacity: 0; transition: opacity 500ms var(--ease-mecc); touch-action: none; cursor: grab;
+}
+#ugello-canvas.viva{ opacity: 1; }
+#ugello-canvas:active{ cursor: grabbing; }
+.ugello-scena[data-viva="si"] .ugello-poster{ opacity: 0; transition: opacity 500ms var(--ease-mecc); }
+.ugello-comandi{
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--s4);
+  padding: var(--s3) var(--s4); border-top: 1px solid var(--riga);
+}
+.ugello-comandi fieldset{ border: 0; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: var(--s2); }
+.ugello-comandi legend{
+  font-family: var(--f-mono); font-size: 0.6875rem; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--inchiostro-2); padding: 0;
+  margin-bottom: var(--s2); float: left; width: 100%;
+}
+.modello{
+  font-family: var(--f-mono); font-size: var(--t--1);
+  padding: var(--s2) var(--s3); min-height: 38px;
+  background: transparent; color: var(--inchiostro-2);
+  border: 1px solid var(--riga); cursor: pointer;
+  transition: all var(--scatto) var(--ease-mecc);
+}
+.modello:hover{ border-color: var(--inchiostro); color: var(--inchiostro); }
+.modello:active{ transform: translateY(1px); }
+.modello[aria-pressed="true"]{ background: var(--inchiostro); color: var(--tavola); border-color: var(--inchiostro); }
+.scarto{ margin-left: auto; display: flex; align-items: baseline; gap: var(--s3); font-family: var(--f-mono); }
+.scarto .etichetta{ font-size: 0.6875rem; letter-spacing: .12em; text-transform: uppercase; color: var(--inchiostro-2); }
+.scarto .valore{ font-size: var(--t-2); font-weight: 500; color: var(--quota); }
+.capacita{ display: grid; gap: 0; margin-top: var(--s7); border-top: 1px solid var(--riga); }
+@media (min-width: 900px){ .capacita{ grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1200px){ .capacita{ grid-template-columns: repeat(4, 1fr); } }
+.capacita > div{
+  padding: var(--s5) var(--s5) var(--s6) 0;
+  border-bottom: 1px solid var(--riga-2);
+}
+@media (min-width: 900px){ .capacita > div{ padding-right: var(--s6); border-right: 1px solid var(--riga-2); } }
+.capacita h3{ display: flex; align-items: baseline; gap: var(--s3); }
+.capacita h3 .indice{ font-family: var(--f-mono); font-size: 0.75rem; color: var(--quota); font-weight: 400; }
+.capacita ul{ margin: var(--s4) 0 0; padding: 0; list-style: none; }
+.capacita li{
+  padding: var(--s2) 0; font-size: var(--t--1); color: var(--inchiostro-2);
+  border-bottom: 1px dotted var(--riga-2);
+}
+.capacita li:last-child{ border-bottom: 0; }
+.capacita .strumenti{
+  margin-top: var(--s4); font-family: var(--f-mono); font-size: 0.75rem;
+  color: var(--inchiostro-2); line-height: 1.7;
+}
+.caso{ margin-top: var(--s9); }
+.caso:first-of-type{ margin-top: var(--s7); }
+.caso-testa{
+  display: flex; align-items: baseline; gap: var(--s4); flex-wrap: wrap;
+  padding-bottom: var(--s3); border-bottom: 1px solid var(--inchiostro);
+}
+.caso-testa .sigla{ font-family: var(--f-mono); font-size: var(--t--1); color: var(--quota); font-weight: 500; }
+.caso-testa h3{ font-size: var(--t-2); }
+.caso-corpo{ display: grid; gap: var(--s5); margin-top: var(--s5); align-items: start; }
+@media (min-width: 1000px){ .caso-corpo{ grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: var(--s6); } }
+.caso-scheda{ font-size: var(--t--1); }
+.caso-scheda p{ color: var(--inchiostro-2); max-width: 46ch; }
+.caso-scheda table.dati{ margin-top: var(--s4); }
+.caso-scheda table.dati th{ width: 42%; }
+.viste{
+  display: grid; gap: var(--s3); margin-top: var(--s3);
+  grid-template-columns: repeat(2, 1fr);
+}
+@media (min-width: 620px){ .viste{ grid-template-columns: repeat(3, 1fr); } }
+.vista{ background: var(--tavola); border: 1px solid var(--riga); }
+.vista img{
+  width: 100%; aspect-ratio: 16 / 9; object-fit: contain;
+  background: var(--tavola);
+}
+.vista figcaption{
+  padding: var(--s2) var(--s3); border-top: 1px solid var(--riga-2);
+  font-family: var(--f-mono); font-size: 0.6875rem; letter-spacing: .06em;
+  color: var(--inchiostro-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.vista.scura, .vista.scura img{ background: #1a1310; }
+.vista.scura figcaption{ background: var(--tavola); }
+.passi{ counter-reset: passo; display: grid; gap: 0; margin-top: var(--s7); border-top: 1px solid var(--riga); }
+.passo{
+  counter-increment: passo; display: grid; gap: var(--s4);
+  padding: var(--s5) 0; border-bottom: 1px solid var(--riga-2);
+}
+@media (min-width: 860px){ .passo{ grid-template-columns: 4rem minmax(0,22ch) minmax(0,1fr); gap: var(--s6); align-items: baseline; } }
+.passo::before{
+  content: counter(passo, decimal-leading-zero);
+  font-family: var(--f-mono); font-size: var(--t-1); color: var(--quota);
+}
+.passo h3{ font-size: var(--t-1); }
+.passo p{ color: var(--inchiostro-2); font-size: var(--t--1); }
+.passo .serve{
+  display: block; margin-top: var(--s3); font-family: var(--f-mono);
+  font-size: 0.75rem; color: var(--inchiostro-2);
+}
+.scala{ display: grid; gap: 0; margin-top: var(--s7); border-top: 1px solid var(--riga); }
+@media (min-width: 900px){ .scala{ grid-template-columns: repeat(4, 1fr); } }
+.scaglione{
+  padding: var(--s5) var(--s5) var(--s6) 0;
+  border-bottom: 1px solid var(--riga-2);
+}
+@media (min-width: 900px){ .scaglione{ padding-right: var(--s5); border-right: 1px solid var(--riga-2); } }
+.scaglione .durata{
+  font-family: var(--f-mono); font-size: var(--t-1); font-weight: 500;
+  color: var(--inchiostro); display: block;
+}
+.scaglione h3{ margin-top: var(--s3); font-size: var(--t-0); }
+.scaglione p{ margin-top: var(--s3); font-size: var(--t--1); color: var(--inchiostro-2); }
+.scaglione ul{ margin: var(--s4) 0 0; padding: 0; list-style: none; }
+.scaglione li{
+  font-family: var(--f-mono); font-size: 0.75rem; color: var(--inchiostro-2);
+  padding: var(--s1) 0 var(--s1) var(--s4); position: relative;
+}
+.scaglione li::before{ content: "+"; position: absolute; left: 0; color: var(--quota); }
+.firma{ display: grid; gap: var(--s6); margin-top: var(--s6); }
+@media (min-width: 860px){ .firma{ grid-template-columns: 168px minmax(0,1fr); gap: var(--s7); } }
+.ritratto{ width: 168px; height: 168px; object-fit: cover; border: 1px solid var(--riga); background: var(--tavola); }
+.firma-testo p{ margin-top: var(--s4); color: var(--inchiostro-2); }
+.firma-testo p:first-child{ margin-top: 0; color: var(--inchiostro); font-size: var(--t-1); }
+.firma-testo strong{ color: var(--inchiostro); font-weight: 500; }
+.consegna{ margin: var(--s7) 0 0; display: grid; gap: 0; border-top: 1px solid var(--riga); }
+@media (min-width: 800px){ .consegna{ grid-template-columns: repeat(2, 1fr); column-gap: var(--s7); } }
+.consegna > div{ display: grid; gap: var(--s2); padding: var(--s4) 0; border-bottom: 1px solid var(--riga-2); }
+@media (min-width: 560px){ .consegna > div{ grid-template-columns: 14ch minmax(0,1fr); gap: var(--s4); } }
+.consegna dt{ font-family: var(--f-mono); font-size: var(--t--1); color: var(--inchiostro); }
+.consegna dd{ margin: 0; font-size: var(--t--1); color: var(--inchiostro-2); }
+.chiusura{ background: var(--inchiostro); color: var(--carta); }
+.chiusura h2, .chiusura .numero-sezione{ color: var(--carta); }
+.chiusura .occhiello{ color: color-mix(in oklch, var(--carta) 70%, transparent); }
+.chiusura .occhiello::after{ background: color-mix(in oklch, var(--carta) 26%, transparent); }
+.chiusura .intro{ color: color-mix(in oklch, var(--carta) 82%, transparent); font-size: var(--t-1); }
+.modulo{
+  margin-top: var(--s7); display: grid; gap: var(--s5);
+  max-width: 620px; padding: var(--s6);
+  border: 1px solid color-mix(in oklch, var(--carta) 26%, transparent);
+}
+.campo{ display: grid; gap: var(--s2); }
+.campo label{
+  font-family: var(--f-mono); font-size: 0.75rem; letter-spacing: .1em;
+  text-transform: uppercase; color: color-mix(in oklch, var(--carta) 78%, transparent);
+}
+.campo .facolt{ text-transform: none; letter-spacing: 0; color: color-mix(in oklch, var(--carta) 60%, transparent); }
+.campo input, .campo textarea{
+  font: inherit; font-size: var(--t-0);
+  background: color-mix(in oklch, var(--carta) 95%, transparent);
+  color: var(--inchiostro); border: 1px solid transparent; border-radius: 0;
+  padding: var(--s3) var(--s4); min-height: 46px; width: 100%;
+}
+.campo textarea{ min-height: 104px; resize: vertical; line-height: 1.5; }
+.campo input::placeholder, .campo textarea::placeholder{ color: var(--inchiostro-2); }
+.aiuto{ font-size: 0.8125rem; color: color-mix(in oklch, var(--carta) 76%, transparent); }
+.zona-file{
+  border: 1px dashed color-mix(in oklch, var(--carta) 40%, transparent);
+  padding: var(--s5); text-align: left; background: transparent;
+  color: color-mix(in oklch, var(--carta) 88%, transparent);
+  cursor: pointer; font: inherit; font-size: var(--t--1); width: 100%;
+  transition: border-color var(--scatto) var(--ease-mecc), background-color var(--scatto) var(--ease-mecc);
+}
+.zona-file:hover, .zona-file[data-sopra="si"]{
+  border-color: var(--quota-viva); background: color-mix(in oklch, var(--quota) 14%, transparent);
+}
+.zona-file .pieno .mono{ color: var(--quota-viva); }
+.errore{ color: #FFB4A6; font-size: var(--t--1); }
+.errore:empty{ display: none; }
+.esito{ display: none; margin-top: var(--s5); max-width: 620px; }
+.esito[data-stato]{ display: block; }
+.esito .riquadro{
+  padding: var(--s5);
+  border: 1px solid color-mix(in oklch, var(--carta) 28%, transparent);
+  background: color-mix(in oklch, var(--carta) 8%, transparent);
+}
+.esito h3{ color: var(--carta); margin-bottom: var(--s2); }
+.esito p{ color: color-mix(in oklch, var(--carta) 88%, transparent); }
+.filatore{
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 2px solid color-mix(in oklch, var(--carta) 30%, transparent);
+  border-top-color: var(--quota-viva);
+  display: inline-block; vertical-align: -2px; margin-right: var(--s2);
+  animation: gira 900ms linear infinite;
+}
+@keyframes gira{ to{ transform: rotate(360deg); } }
+.chiusura .btn-primario{ background: var(--quota); border-color: var(--quota); }
+</style>
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 28'%3E%3Crect width='40' height='28' fill='%23EFF1F1'/%3E%3Cg stroke='%2314191B' stroke-width='1.6'%3E%3Cpath d='M7 4v20M14 4v20M20 4v20M25 4v20M29 4v20M32 4v20'/%3E%3C/g%3E%3Crect x='33.4' y='4' width='3' height='20' fill='%23C0392B'/%3E%3C/svg%3E">
+</head>
+<body>
+<script>document.documentElement.className='js'</script>
+
+<a class="salta" href="#contenuto">Salta al contenuto</a>
+<div class="reticolo" aria-hidden="true"></div>
+
+<!-- ============================================ testata -->
+<header class="testata" id="testata">
+  <div class="guida">
+    <a class="marchio" href="#" aria-label="Gradient Numerics, torna in cima">
+      <svg viewBox="0 0 40 28" role="img" aria-hidden="true" focusable="false">
+        <g stroke="currentColor" stroke-width="1.6" fill="none">
+          <path d="M3 3v22M10 3v22M17 3v22M23 3v22M28 3v22M31.6 3v22"/>
+        </g>
+        <rect x="33.6" y="3" width="3.4" height="22" fill="var(--quota)"/>
+      </svg>
+      <span class="nome">Gradient Numerics</span>
+    </a>
+    <nav class="nav-testata" aria-label="Sezioni">
+      <a class="voce" href="#problema"><span class="indice mono">01</span>Il problema</a>
+      <a class="voce" href="#validazione"><span class="indice mono">02</span>Validazione</a>
+      <a class="voce" href="#servizi"><span class="indice mono">03</span>Cosa calcolo</a>
+      <a class="voce" href="#firma"><span class="indice mono">06</span>Chi firma</a>
+      <details class="lingue">
+        <summary aria-label="Scegli la lingua"><span class="mono">IT</span></summary>
+        <ul><li><a href="/" hreflang="it" lang="it" aria-current="true"><span class="mono">IT</span> Italiano</a></li></ul>
+      </details>
+      <a class="btn btn-primario" href="#manda" data-cta="testata">Manda la geometria</a>
+    </nav>
+  </div>
+</header>
+
+<main id="contenuto">
+
+<!-- ============================================ 00 piega -->
+<section class="piega" aria-labelledby="t-piega">
+  <div class="guida">
+    <p class="occhiello"><span class="numero-sezione">00</span> Simulazione multifisica · Genova</p>
+    <div class="piega-griglia">
+      <div>
+        <h1 id="t-piega" data-titolo>
+          <span class="riga-mask"><span>Il risultato,</span></span>
+          <span class="riga-mask"><span>e di quanto sbaglia.</span></span>
+        </h1>
+
+        <!-- la quota misura la cosa che vendiamo: la distanza dalla misura -->
+        <svg class="quota-titolo" viewBox="0 0 460 62" role="img" aria-label="Linea di quota che misura lo scarto dichiarato: undici per cento dalla misura sperimentale sul benchmark FDA a Reynolds 6500." data-quota>
+          <g class="filo" fill="none" stroke-linecap="butt">
+            <path d="M8 6 V34" pathLength="1"/>
+            <path d="M452 6 V34" pathLength="1"/>
+            <path d="M8 22 H452" class="tirata" pathLength="1"/>
+          </g>
+          <path d="M8 22 l9 -4 v8 z" fill="currentColor"/>
+          <path d="M452 22 l-9 -4 v8 z" fill="currentColor"/>
+          <rect x="196" y="8" width="68" height="28" fill="var(--carta)"/>
+          <text x="230" y="28" text-anchor="middle" font-weight="500">Δ 11%</text>
+          <text x="8" y="54" fill="var(--inchiostro-2)" font-size="12">scarto dichiarato dalla misura sperimentale, benchmark FDA, Re 6500</text>
+        </svg>
+
+        <p class="sommario" data-anima="su">Calcolo flussi, scambio termico, strutture e aeroacustica su geometrie reali. Per ogni caso dichiaro il modello che ho usato, la griglia su cui ho girato, e la distanza fra il numero che consegno e una misura.</p>
+        <div class="azioni" data-anima="su">
+          <a class="btn btn-primario" href="#manda" data-cta="piega">Manda la geometria</a>
+          <a class="btn btn-secondario" href="#validazione">Leggi la validazione</a>
+        </div>
+        <p class="nota-azione">Rispondo io, non un modulo.</p>
+      </div>
+
+      <figure class="tavola" data-anima="tavola">
+        <figcaption class="tavola-testa">
+          <span class="sigla">TAV. 01</span>
+          <span class="oggetto">Carena tipo DARPA SUBOFF</span>
+          <span class="dato">p · OpenFOAM 13 · ParaView</span>
+        </figcaption>
+        <div class="tavola-corpo stretta">
+          <div class="barra-colore" data-barra></div>
+          <img src="assets/fig-suboff-3q-1000.webp"
+               srcset="assets/fig-suboff-3q-640.webp 640w, assets/fig-suboff-3q-1000.webp 1000w, assets/fig-suboff-3q.webp 1599w"
+               sizes="(min-width: 1000px) 40vw, 92vw"
+               alt="Carena sottomarina di riferimento vista di tre quarti dall'alto, colorata secondo il campo di pressione superficiale: giallo sulla prua, verde acqua lungo la fiancata." width="1599" height="777" loading="eager" decoding="async" fetchpriority="high">
+        </div>
+        <figcaption><b>TAV. 01</b> Campo di pressione sulla superficie, scala viridis da meno quattro a quattro. Il caso per intero, con setup e residui, sta nella sezione 02.</figcaption>
+      </figure>
+    </div>
+
+    <div class="conti" data-anima="conti">
+      <div class="conto"><b class="mono">39%</b><span>di differenza sullo stesso condotto, cambiando solo il modello di turbolenza</span></div>
+      <div class="conto"><b class="mono">11%</b><span>lo scarto del modello migliore dalla misura, scritto invece che taciuto</span></div>
+      <div class="conto"><b class="mono">22</b><span>tavole di calcolo pubblicate qui sotto, su cinque geometrie diverse</span></div>
+      <div class="conto"><b class="mono">4 / 54</b><span>quarti su cinquantaquattro università alla IMechE UAS Challenge 2026</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ 01 il problema -->
+<section id="problema" class="fascia fascia-alt" aria-labelledby="t-problema">
+  <div class="guida">
+    <p class="occhiello"><span class="numero-sezione">01</span> Il problema</p>
+    <div class="testa-sezione"><h2 id="t-problema" data-anima="su">Sullo stesso identico condotto, il risultato cambia del 39%.</h2></div>
+    <p class="intro-sezione" data-anima="su">La FDA ha messo un condotto semplice a disposizione di chiunque volesse calcolarlo: un tubo, un collettore conico, una gola, un'espansione brusca. Geometria pubblica, condizioni pubbliche, misure sperimentali pubbliche.</p>
+    <p data-anima="su" style="margin-top:var(--s5)">La velocità predetta sull'asse, a Reynolds 6500, si discosta dell'<span class="mono">11%</span> dalla misura con un modello di turbolenza, del <span class="mono">12%</span> con un altro, del <span class="mono">39%</span> con il terzo. Non cambia la geometria. Non cambia il software. Cambia solo come è stato impostato il caso.</p>
+    <blockquote class="citazione" data-anima="su">
+      <p>Results viewed in this way take on an air of authority out of proportion to their accuracy. In this regard, modern CFD is a very seductive thing.</p>
+      <cite>Doug McLean, Boeing Technical Fellow</cite>
+    </blockquote>
+  </div>
+</section>
+
+
+<!-- ============================================ 02 la validazione -->
+<section id="validazione" class="fascia" aria-labelledby="t-val">
+  <div class="guida">
+    <p class="occhiello"><span class="numero-sezione">02</span> La validazione</p>
+    <div class="testa-sezione"><h2 id="t-val" data-anima="su">Il caso che pubblico per intero, prima che tu me ne chieda uno tuo.</h2></div>
+    <p class="intro-sezione" data-anima="su">Ho preso una carena di riferimento con dati sperimentali pubblicati, l'ho calcolata, e qui sotto c'è tutto quello che serve per rifarla. E per contestarla.</p>
+    <div class="due-colonne" style="margin-top:var(--s7)">
+      <div>
+      <figure class="tavola" data-anima="tavola">
+        <figcaption class="tavola-testa">
+          <span class="sigla">TAV. 02</span>
+          <span class="oggetto">DARPA SUBOFF, vista laterale</span>
+          <span class="dato">p · OpenFOAM 13</span>
+        </figcaption>
+        <div class="tavola-corpo stretta">
+          <div class="barra-colore" data-barra></div>
+          <img src="assets/suboff-b-1000.webp"
+               srcset="assets/suboff-b-640.webp 640w, assets/suboff-b-1000.webp 1000w, assets/suboff-b.webp 1600w"
+               sizes="(min-width: 1000px) 58vw, 92vw"
+               alt="La stessa carena vista di fianco, con il campo di pressione: il picco giallo sulla prua e la scia dei timoni in coda." width="1898" height="571" loading="lazy" decoding="async">
+        </div>
+        <figcaption><b>TAV. 02</b> Stesso caso della TAV. 01, stessa scala di colore. La vista laterale serve a leggere il gradiente lungo la carena.</figcaption>
+      </figure>
+      </div>
+      <div>
+        <div class="tabella-avvolta" data-anima="tabella">
+          <table class="dati">
+            <caption class="occhiello" style="margin-bottom:var(--s3)">Il caso, per intero</caption>
+            <tbody>
+              <tr><th scope="row">Geometria</th><td>DARPA SUBOFF, scafo nudo con vela e timoni</td></tr>
+              <tr><th scope="row">Solutore</th><td>OpenFOAM 13</td></tr>
+              <tr><th scope="row">Numero di Reynolds</th><td><span class="segnaposto">DA COMPILARE</span></td></tr>
+              <tr><th scope="row">Celle</th><td><span class="segnaposto">DA COMPILARE</span></td></tr>
+              <tr><th scope="row">y+ medio a parete</th><td><span class="segnaposto">DA COMPILARE</span></td></tr>
+              <tr><th scope="row">Modello di turbolenza</th><td><span class="segnaposto">DA COMPILARE</span></td></tr>
+              <tr><th scope="row">Schema di discretizzazione</th><td><span class="segnaposto">DA COMPILARE</span></td></tr>
+              <tr><th scope="row">Coefficiente di resistenza calcolato</th><td><span class="segnaposto">DA COMPILARE</span></td></tr>
+              <tr><th scope="row">Valore sperimentale di riferimento</th><td><span class="segnaposto">DA COMPILARE</span></td></tr>
+              <tr class="rilievo"><th scope="row">Scarto</th><td><span class="segnaposto">DA COMPILARE</span></td></tr>
+              <tr><th scope="row">Ore di calcolo e core</th><td><span class="segnaposto">DA COMPILARE</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="avviso-segnaposto" role="note">
+          <span class="mono" aria-hidden="true">!</span>
+          <span>I valori marcati in giallo sono segnaposto. Vanno sostituiti con i numeri veri dei log prima di pubblicare: questa pagina non va online finché ce n'è uno.</span>
+        </p>
+        <div class="limite">
+          <p><b>Il limite di questo numero</b> Lo scarto vale per questa geometria, a questo numero di Reynolds, con questa griglia. Fuori da queste condizioni va rimisurato. Se il tuo caso ci sta fuori, te lo dico prima di partire invece che dopo.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:var(--s9)">
+      <div class="testa-sezione"><h3 id="t-ugello">L'ugello del benchmark, da girare</h3></div>
+      <p style="margin-top:var(--s3);color:var(--inchiostro-2)">Ruota il pezzo. Cambia il modello di turbolenza. Guarda di quanto si sposta lo scarto.</p>
+      <div class="tavola" data-anima="tavola" style="margin-top:var(--s5)">
+        <div class="tavola-testa">
+          <span class="sigla">TAV. 03</span>
+          <span class="oggetto">Ugello FDA, sezione e volume di fluido</span>
+          <span class="dato">velocità media da continuità</span>
+        </div>
+        <div class="ugello-scena" id="ugello-scena" data-viva="no">
+          <div class="ugello-poster" id="ugello-poster">
+            <svg viewBox="0 0 800 360" role="img" aria-labelledby="poster-t poster-d">
+              <title id="poster-t">Sezione quotata dell'ugello del benchmark FDA</title>
+              <desc id="poster-d">Condotto in sezione: tubo di ingresso da 12 millimetri di diametro, collettore conico a 10 gradi per lato, gola da 4 millimetri lunga 40 millimetri, espansione brusca e tubo di uscita da 12 millimetri.</desc>
+              <g fill="none" stroke="currentColor" stroke-width="1.5" opacity=".9">
+                <path fill="currentColor" fill-opacity=".08" stroke="currentColor"
+                  d="M100 156 L260 156 L350.7 172 L510.7 172 L510.7 156 L710.7 156 L710.7 140 L100 140 Z"/>
+                <path fill="currentColor" fill-opacity=".08" stroke="currentColor"
+                  d="M100 204 L260 204 L350.7 188 L510.7 188 L510.7 204 L710.7 204 L710.7 220 L100 220 Z"/>
+              </g>
+              <path d="M70 180 H740" stroke="currentColor" stroke-width="1" stroke-dasharray="18 5 3 5" opacity=".5"/>
+              <g stroke="var(--quota)" stroke-width="1" fill="none">
+                <path d="M150 156 V96 M150 204 V264"/>
+                <path d="M430 172 V116 M430 188 V244"/>
+                <path d="M350.7 264 V296 M510.7 264 V296"/>
+                <path d="M120 100 H180 M120 260 H180"/>
+                <path d="M350.7 288 H510.7"/>
+              </g>
+              <g fill="var(--quota)" font-family="IBM Plex Mono, monospace" font-size="15">
+                <text x="150" y="88" text-anchor="middle">&#216; 12 mm</text>
+                <text x="430" y="108" text-anchor="middle">&#216; 4 mm</text>
+                <text x="430" y="312" text-anchor="middle">gola 40 mm</text>
+                <text x="292" y="130" text-anchor="middle" font-size="13">cono 10° per lato</text>
+                <text x="600" y="130" text-anchor="middle" font-size="13">espansione brusca</text>
+              </g>
+              <g fill="var(--quota)">
+                <path d="M150 96 l-4 8 h8 z"/><path d="M150 264 l-4 -8 h8 z"/>
+                <path d="M350.7 288 l8 -4 v8 z"/><path d="M510.7 288 l-8 -4 v8 z"/>
+              </g>
+            </svg>
+          </div>
+          <canvas id="ugello-canvas" role="img" tabindex="0" aria-label="Modello tridimensionale dell'ugello del benchmark FDA. L'involucro è mostrato in sezione e dentro si vede il volume di fluido, colorato secondo la velocità media. Trascina, o usa le frecce, per ruotarlo. Le stesse quote sono nel disegno qui accanto e nel testo."></canvas>
+        </div>
+        <div class="ugello-comandi">
+          <fieldset>
+            <legend>Modello di turbolenza</legend>
+            <button type="button" class="modello" data-modello="sst" data-scarto="11" aria-pressed="true">SST k-&#969;</button>
+            <button type="button" class="modello" data-modello="komega" data-scarto="12" aria-pressed="false">k-&#969; standard</button>
+            <button type="button" class="modello" data-modello="realizable" data-scarto="39" aria-pressed="false">realizable k-&#949;</button>
+          </fieldset>
+          <p class="scarto">
+            <span class="etichetta">Scarto dalla media sperimentale</span>
+            <span class="valore mono" id="valore-scarto" role="status" aria-live="polite">11%</span>
+          </p>
+        </div>
+        <div class="tavola-corpo" style="border-top:1px solid var(--riga-2)">
+          <p style="font-size:var(--t--1);color:var(--inchiostro-2);max-width:none">Geometria ricostruita dalle quote pubblicate. L'involucro è in sezione, il corpo colorato dentro è il volume di fluido: il colore è la velocità media da continuità, aritmetica, non un calcolo. Gli scarti sono quelli misurati nello studio a Reynolds 6500, non simulazioni fatte da me.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ 03 cosa calcolo -->
+<section id="servizi" class="fascia fascia-alt" aria-labelledby="t-serv">
+  <div class="guida">
+    <p class="occhiello"><span class="numero-sezione">03</span> Cosa calcolo</p>
+    <div class="testa-sezione"><h2 id="t-serv" data-anima="su">Quattro famiglie di problemi, un modo solo di consegnarli.</h2></div>
+    <p class="intro-sezione" data-anima="su">Il perimetro è la simulazione numerica su geometrie vere: quello che si risolve con un solutore, una griglia e delle condizioni al contorno scritte.</p>
+    <div class="capacita">
+      <div data-anima="colonna">
+        <h3><span class="indice">A</span>Fluidi</h3>
+        <ul><li>RANS stazionari, interni ed esterni</li><li>Transitori e distacchi di vortice</li><li>Comprimibile, dal subsonico al supersonico</li><li>Aerodinamica di velivoli e carene</li><li>Perdite di carico, portate, coefficienti</li></ul>
+        <p class="strumenti">OpenFOAM 13 · SU2 · Ansys Fluent</p>
+      </div>
+      <div data-anima="colonna">
+        <h3><span class="indice">B</span>Termica</h3>
+        <ul><li>Conduzione e convezione naturale</li><li>Convezione forzata e raffreddamento</li><li>Scambio coniugato fluido-solido</li><li>Getti impattanti su elettronica</li><li>Mappe di temperatura e flussi termici</li></ul>
+        <p class="strumenti">OpenFOAM 13 · Ansys</p>
+      </div>
+      <div data-anima="colonna">
+        <h3><span class="indice">C</span>Strutture</h3>
+        <ul><li>Statica lineare su componente</li><li>Analisi modale e frequenze proprie</li><li>Verifica di tensioni e deformate</li><li>Carichi aerodinamici portati sul FEM</li><li>Confronto con prove di carico</li></ul>
+        <p class="strumenti">Ansys Mechanical · CalculiX</p>
+      </div>
+      <div data-anima="colonna">
+        <h3><span class="indice">D</span>Acustica e ottimizzazione</h3>
+        <ul><li>Aeroacustica computazionale non stazionaria</li><li>Analisi spettrale del campo di pressione</li><li>Ottimizzazione parametrica di forma</li><li>Metodo aggiunto sul gradiente</li><li>Esplorazione dello spazio di progetto</li></ul>
+        <p class="strumenti">OpenFOAM · Python · Dakota</p>
+      </div>
+    </div>
+    <div class="limite" data-anima="su">
+      <p><b>Dove sono più forte, e dove meno</b> La validazione pubblicata e le ventidue tavole qui sotto sono tutte sul lato fluido e termico: è lì che ho le prove. Sul FEM strutturale lavoro e ho gli strumenti, ma non ho ancora un caso pubblico con il confronto sperimentale. Quando ce l'avrò lo metterò qui accanto agli altri, con il suo scarto.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ 04 i casi -->
+<section id="casi" class="fascia" aria-labelledby="t-casi">
+  <div class="guida">
+    <p class="occhiello"><span class="numero-sezione">04</span> I casi</p>
+    <div class="testa-sezione"><h2 id="t-casi" data-anima="su">Ventidue tavole, cinque geometrie, ogni campo con la sua scala.</h2></div>
+    <p class="intro-sezione" data-anima="su">Non sono immagini scelte perché stanno bene in pagina. Sono le uscite dei calcoli, con la barra colore e l'intervallo che avevano quando sono state prodotte. Dove manca un numero, la casella è gialla: non lo invento.</p>
+
+  <article class="caso" id="caso-suboff">
+    <header class="caso-testa">
+      <span class="sigla">CASO 01</span>
+      <h3>Carena sottomarina di riferimento</h3>
+      <span class="dato mono">p · viridis · −4,0 … 4,0</span>
+    </header>
+    <div class="caso-corpo">
+      <div>
+      <figure class="tavola" data-anima="tavola">
+        <figcaption class="tavola-testa">
+          <span class="sigla">TAV. 04</span>
+          <span class="oggetto">DARPA SUBOFF, tre quarti dall'alto</span>
+          <span class="dato">p · OpenFOAM 13 · ParaView</span>
+        </figcaption>
+        <div class="tavola-corpo stretta">
+          <div class="barra-colore" data-barra></div>
+          <img src="assets/suboff-e-1000.webp"
+               srcset="assets/suboff-e-640.webp 640w, assets/suboff-e-1000.webp 1000w, assets/suboff-e.webp 1600w"
+               sizes="(min-width: 1000px) 58vw, 92vw"
+               alt="Carena sottomarina vista di tre quarti dall'alto, campo di pressione in scala viridis, picco sulla prua." width="1600" height="900" loading="lazy" decoding="async">
+        </div>
+        <figcaption><b>TAV. 04</b> Sei viste dello stesso calcolo, tutte con la stessa scala di colore, così i confronti fra una vista e l'altra restano leggibili.</figcaption>
+      </figure>
+      <div class="viste">
+        <figure class="vista">
+          <img src="assets/suboff-a-640.webp" srcset="assets/suboff-a-640.webp 640w, assets/suboff-a-1000.webp 1000w" sizes="(min-width: 620px) 30vw, 45vw" alt="Carena vista di fianco, lato sinistro, campo di pressione." loading="lazy" decoding="async">
+          <figcaption>laterale sinistra</figcaption>
+        </figure>
+        <figure class="vista">
+          <img src="assets/suboff-b-640.webp" srcset="assets/suboff-b-640.webp 640w, assets/suboff-b-1000.webp 1000w" sizes="(min-width: 620px) 30vw, 45vw" alt="Carena vista di fianco, lato destro, campo di pressione." loading="lazy" decoding="async">
+          <figcaption>laterale destra</figcaption>
+        </figure>
+        <figure class="vista">
+          <img src="assets/suboff-c-640.webp" srcset="assets/suboff-c-640.webp 640w, assets/suboff-c-1000.webp 1000w" sizes="(min-width: 620px) 30vw, 45vw" alt="Carena vista di prua, sezione circolare con la vela in alto." loading="lazy" decoding="async">
+          <figcaption>di prua</figcaption>
+        </figure>
+        <figure class="vista">
+          <img src="assets/suboff-d-640.webp" srcset="assets/suboff-d-640.webp 640w, assets/suboff-d-1000.webp 1000w" sizes="(min-width: 620px) 30vw, 45vw" alt="Carena vista di poppa, con i timoni a croce." loading="lazy" decoding="async">
+          <figcaption>di poppa</figcaption>
+        </figure>
+        <figure class="vista">
+          <img src="assets/suboff-f-640.webp" srcset="assets/suboff-f-640.webp 640w, assets/suboff-f-1000.webp 1000w" sizes="(min-width: 620px) 30vw, 45vw" alt="Carena vista di tre quarti da poppa, con la scia dei timoni." loading="lazy" decoding="async">
+          <figcaption>tre quarti da poppa</figcaption>
+        </figure>
+      </div>
+      </div>
+      <div class="caso-scheda">
+        <p>È la geometria di riferimento della flotta: scafo nudo con vela e timoni, quote pubbliche e dati sperimentali pubblicati. La uso come banco di prova del mio setup, ed è il caso che pubblico per intero nella sezione 02.</p>
+        <div class="tabella-avvolta">
+          <table class="dati">
+            <caption class="occhiello" style="margin-bottom:var(--s3)">Scheda del caso</caption>
+            <tbody>
+            <tr><th scope="row">Geometria</th><td>DARPA SUBOFF, scafo con vela e timoni</td></tr>
+            <tr><th scope="row">Campo</th><td>pressione statica <span class="mono">p</span></td></tr>
+            <tr><th scope="row">Scala colore</th><td>viridis</td></tr>
+            <tr><th scope="row">Intervallo</th><td><span class="mono">−4,0 … 4,0</span></td></tr>
+            <tr><th scope="row">Solutore</th><td>OpenFOAM 13, post-processing in ParaView</td></tr>
+            <tr><th scope="row">Griglia</th><td><span class="segnaposto">DA COMPILARE</span></td></tr>
+            <tr><th scope="row">Condizioni</th><td><span class="segnaposto">DA COMPILARE</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </article>
+  <article class="caso" id="caso-boxwing" data-mappa="arcobaleno">
+    <header class="caso-testa">
+      <span class="sigla">CASO 02</span>
+      <h3>Velivolo senza pilota ad ala chiusa</h3>
+      <span class="dato mono">p · arcobaleno · −150 … 150</span>
+    </header>
+    <div class="caso-corpo">
+      <div>
+      <figure class="tavola" data-anima="tavola">
+        <figcaption class="tavola-testa">
+          <span class="sigla">TAV. 05</span>
+          <span class="oggetto">UAV box-wing, tre quarti dall'alto</span>
+          <span class="dato">p · ParaView</span>
+        </figcaption>
+        <div class="tavola-corpo stretta">
+          <div class="barra-colore" data-barra></div>
+          <img src="assets/boxwing-b-1000.webp"
+               srcset="assets/boxwing-b-640.webp 640w, assets/boxwing-b-1000.webp 1000w, assets/boxwing-b.webp 1600w"
+               sizes="(min-width: 1000px) 58vw, 92vw"
+               alt="Velivolo senza pilota ad ala chiusa visto di tre quarti dall'alto, campo di pressione sulla superficie, blu sulle estremità e rosso sui bordi d'attacco." width="1600" height="900" loading="lazy" decoding="async">
+        </div>
+        <figcaption><b>TAV. 05</b> Ala anteriore e posteriore chiuse alle estremità da due paratie verticali. Il campo di pressione mostra il carico che si sposta fra le due ali.</figcaption>
+      </figure>
+      <div class="viste">
+        <figure class="vista">
+          <img src="assets/boxwing-a-640.webp" srcset="assets/boxwing-a-640.webp 640w, assets/boxwing-a-1000.webp 1000w" sizes="(min-width: 620px) 30vw, 45vw" alt="Il velivolo ad ala chiusa visto di tre quarti da davanti." loading="lazy" decoding="async">
+          <figcaption>tre quarti anteriore</figcaption>
+        </figure>
+        <figure class="vista">
+          <img src="assets/boxwing-c-640.webp" srcset="assets/boxwing-c-640.webp 640w, assets/boxwing-c-1000.webp 1000w" sizes="(min-width: 620px) 30vw, 45vw" alt="Il velivolo visto frontalmente, con le due ali sovrapposte." loading="lazy" decoding="async">
+          <figcaption>di muso</figcaption>
+        </figure>
+        <figure class="vista">
+          <img src="assets/boxwing-d-640.webp" srcset="assets/boxwing-d-640.webp 640w, assets/boxwing-d-1000.webp 1000w" sizes="(min-width: 620px) 30vw, 45vw" alt="Il velivolo visto dall'alto, pianta delle due ali chiuse." loading="lazy" decoding="async">
+          <figcaption>dall'alto</figcaption>
+        </figure>
+        <figure class="vista">
+          <img src="assets/boxwing-e-640.webp" srcset="assets/boxwing-e-640.webp 640w, assets/boxwing-e-1000.webp 1000w" sizes="(min-width: 620px) 30vw, 45vw" alt="Il velivolo visto in linea con l'ala, profilo sottilissimo." loading="lazy" decoding="async">
+          <figcaption>in linea d'ala</figcaption>
+        </figure>
+        <figure class="vista">
+          <img src="assets/boxwing-f-640.webp" srcset="assets/boxwing-f-640.webp 640w, assets/boxwing-f-1000.webp 1000w" sizes="(min-width: 620px) 30vw, 45vw" alt="Il velivolo visto di tre quarti da dietro." loading="lazy" decoding="async">
+          <figcaption>tre quarti posteriore</figcaption>
+        </figure>
+      </div>
+      </div>
+      <div class="caso-scheda">
+        <p>Configurazione ad ala chiusa: due ali collegate alle estremità, che scambia induzione contro peso e complicazione strutturale. Sei viste per leggere il carico su tutte e due le ali e sulle paratie.</p>
+        <div class="tabella-avvolta">
+          <table class="dati">
+            <caption class="occhiello" style="margin-bottom:var(--s3)">Scheda del caso</caption>
+            <tbody>
+            <tr><th scope="row">Geometria</th><td>velivolo senza pilota, ala chiusa, motore in fusoliera</td></tr>
+            <tr><th scope="row">Campo</th><td>pressione statica <span class="mono">p</span></td></tr>
+            <tr><th scope="row">Scala colore</th><td>arcobaleno</td></tr>
+            <tr><th scope="row">Intervallo</th><td><span class="mono">−1,5e+02 … 1,5e+02</span></td></tr>
+            <tr><th scope="row">Solutore</th><td><span class="segnaposto">DA COMPILARE</span></td></tr>
+            <tr><th scope="row">Griglia</th><td><span class="segnaposto">DA COMPILARE</span></td></tr>
+            <tr><th scope="row">Condizioni</th><td><span class="segnaposto">DA COMPILARE</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </article>
+  <article class="caso" id="caso-uav" data-mappa="arcobaleno">
+    <header class="caso-testa">
+      <span class="sigla">CASO 03</span>
+      <h3>Velivolo ad ala fissa, sforzo a parete</h3>
+      <span class="dato mono">wallShearStress · arcobaleno · 0 … 3,0</span>
+    </header>
+    <div class="caso-corpo">
+      <div>
+      <figure class="tavola" data-anima="tavola">
+        <figcaption class="tavola-testa">
+          <span class="sigla">TAV. 06</span>
+          <span class="oggetto">UAV ad ala fissa, tre quarti</span>
+          <span class="dato">modulo di τ a parete · OpenFOAM 13</span>
+        </figcaption>
+        <div class="tavola-corpo stretta">
+          <div class="barra-colore" data-barra></div>
+          <img src="assets/uav-a-1000.webp"
+               srcset="assets/uav-a-640.webp 640w, assets/uav-a-1000.webp 1000w, assets/uav-a.webp 1600w"
+               sizes="(min-width: 1000px) 58vw, 92vw"
+               alt="Velivolo ad ala fissa con carrello visto di tre quarti, con il modulo dello sforzo di taglio a parete disegnato sulla superficie: rosso sui bordi d'attacco, blu sul dorso." width="1600" height="900" loading="lazy" decoding="async">
+        </div>
+        <figcaption><b>TAV. 06</b> Il modulo dello sforzo di taglio a parete dice dove lo strato limite è ancora attaccato e dove sta per lasciare. Le linee sulla superficie seguono la direzione dell'attrito.</figcaption>
+      </figure>
+      <div class="viste">
+        <figure class="vista">
+          <img src="assets/uav-b-640.webp" srcset="assets/uav-b-640.webp 640w, assets/uav-b-1000.webp 1000w" sizes="(min-width: 620px) 30vw, 45vw" alt="Il velivolo ad ala fissa visto dall'alto, sforzo a parete sulle ali." loading="lazy" decoding="async">
+          <figcaption>dall'alto</figcaption>
+        </figure>
+        <figure class="vista">
+          <img src="assets/uav-c-640.webp" srcset="assets/uav-c-640.webp 640w, assets/uav-c-1000.webp 1000w" sizes="(min-width: 620px) 30vw, 45vw" alt="Il velivolo visto dall'alto in una seconda condizione, con più rosso sui bordi d'attacco." loading="lazy" decoding="async">
+          <figcaption>dall'alto, altra corsa</figcaption>
+        </figure>
+        <figure class="vista">
+          <img src="assets/uav-d-640.webp" srcset="assets/uav-d-640.webp 640w, assets/uav-d-1000.webp 1000w" sizes="(min-width: 620px) 30vw, 45vw" alt="Il velivolo visto di tre quarti dal lato opposto." loading="lazy" decoding="async">
+          <figcaption>tre quarti opposto</figcaption>
+        </figure>
+      </div>
+      </div>
+      <div class="caso-scheda">
+        <p>Velivolo ad ala fissa con carrello fisso, la configurazione della IMechE UAS Challenge. Lo sforzo a parete serve a vedere separazioni e transizione prima di andare in galleria o in volo.</p>
+        <div class="tabella-avvolta">
+          <table class="dati">
+            <caption class="occhiello" style="margin-bottom:var(--s3)">Scheda del caso</caption>
+            <tbody>
+            <tr><th scope="row">Geometria</th><td>velivolo ad ala fissa, carrello fisso, elica anteriore</td></tr>
+            <tr><th scope="row">Campo</th><td>modulo di <span class="mono">wallShearStress</span></td></tr>
+            <tr><th scope="row">Scala colore</th><td>arcobaleno</td></tr>
+            <tr><th scope="row">Intervallo</th><td><span class="mono">0,0 … 3,0</span></td></tr>
+            <tr><th scope="row">Solutore</th><td>OpenFOAM 13</td></tr>
+            <tr><th scope="row">Griglia</th><td><span class="segnaposto">DA COMPILARE</span></td></tr>
+            <tr><th scope="row">Condizioni</th><td><span class="segnaposto">DA COMPILARE</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </article>
+  <article class="caso" id="caso-razzo" data-mappa="arcobaleno">
+    <header class="caso-testa">
+      <span class="sigla">CASO 04</span>
+      <h3>Corpo affusolato con impennaggi</h3>
+      <span class="dato mono">Cp · arcobaleno · −0,3 … 0,3</span>
+    </header>
+    <div class="caso-corpo">
+      <div>
+      <figure class="tavola" data-anima="tavola">
+        <figcaption class="tavola-testa">
+          <span class="sigla">TAV. 07</span>
+          <span class="oggetto">Corpo affusolato, tre quarti</span>
+          <span class="dato">coefficiente di pressione Cp</span>
+        </figcaption>
+        <div class="tavola-corpo stretta">
+          <div class="barra-colore" data-barra></div>
+          <img src="assets/razzo-c-1000.webp"
+               srcset="assets/razzo-c-640.webp 640w, assets/razzo-c-1000.webp 1000w, assets/razzo-c.webp 1600w"
+               sizes="(min-width: 1000px) 58vw, 92vw"
+               alt="Corpo affusolato lungo e sottile con quattro impennaggi in coda, visto in diagonale, colorato secondo il coefficiente di pressione." width="1600" height="900" loading="lazy" decoding="async">
+        </div>
+        <figcaption><b>TAV. 07</b> Il coefficiente di pressione è adimensionale, quindi la stessa scala vale a velocità diverse. Utile per confrontare varianti di forma senza rifare la normalizzazione.</figcaption>
+      </figure>
+      <div class="viste">
+        <figure class="vista">
+          <img src="assets/razzo-a-640.webp" srcset="assets/razzo-a-640.webp 640w, assets/razzo-a-1000.webp 1000w" sizes="(min-width: 620px) 30vw, 45vw" alt="Il corpo affusolato visto in diagonale dall'alto." loading="lazy" decoding="async">
+          <figcaption>in diagonale</figcaption>
+        </figure>
+        <figure class="vista">
+          <img src="assets/razzo-b-640.webp" srcset="assets/razzo-b-640.webp 640w, assets/razzo-b-1000.webp 1000w" sizes="(min-width: 620px) 30vw, 45vw" alt="Il corpo affusolato visto di fianco, orizzontale." loading="lazy" decoding="async">
+          <figcaption>in orizzontale</figcaption>
+        </figure>
+      </div>
+      </div>
+      <div class="caso-scheda">
+        <p>Corpo di rivoluzione affusolato con impennaggi in coda. Il campo è espresso in coefficiente di pressione, che è la forma in cui si confrontano varianti di ogiva senza dover rifare i conti a ogni velocità.</p>
+        <div class="tabella-avvolta">
+          <table class="dati">
+            <caption class="occhiello" style="margin-bottom:var(--s3)">Scheda del caso</caption>
+            <tbody>
+            <tr><th scope="row">Geometria</th><td>corpo di rivoluzione affusolato, quattro impennaggi</td></tr>
+            <tr><th scope="row">Campo</th><td>coefficiente di pressione <span class="mono">Cp</span></td></tr>
+            <tr><th scope="row">Scala colore</th><td>arcobaleno</td></tr>
+            <tr><th scope="row">Intervallo</th><td><span class="mono">−3,0e−01 … 3,0e−01</span></td></tr>
+            <tr><th scope="row">Solutore</th><td><span class="segnaposto">DA COMPILARE</span></td></tr>
+            <tr><th scope="row">Griglia</th><td><span class="segnaposto">DA COMPILARE</span></td></tr>
+            <tr><th scope="row">Condizioni</th><td><span class="segnaposto">DA COMPILARE</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </article>
+  <article class="caso" id="caso-urto" data-mappa="arcobaleno">
+    <header class="caso-testa">
+      <span class="sigla">CASO 05</span>
+      <h3>Campo di velocità con onda d'urto</h3>
+      <span class="dato mono">Velocity Magnitude · 0 … 489 m/s</span>
+    </header>
+    <div class="caso-corpo">
+      <div>
+      <figure class="tavola" data-anima="tavola">
+        <figcaption class="tavola-testa">
+          <span class="sigla">TAV. 08</span>
+          <span class="oggetto">Piano di contorno, velocità</span>
+          <span class="dato">Ansys 2026 R1</span>
+        </figcaption>
+        <div class="tavola-corpo stretta">
+          <div class="barra-colore" data-barra></div>
+          <img src="assets/urto-c-1000.webp"
+               srcset="assets/urto-c-640.webp 640w, assets/urto-c-1000.webp 1000w, assets/urto-c.webp 1600w"
+               sizes="(min-width: 1000px) 58vw, 92vw"
+               alt="Piano di contorno del campo di velocità attorno a un corpo affusolato: la scia blu e le onde oblique che si staccano dal muso su fondo arancione." width="1165" height="655" loading="lazy" decoding="async">
+        </div>
+        <figcaption><b>TAV. 08</b> Piano di contorno della velocità. La struttura obliqua che parte dal muso e le discontinuità lungo il corpo sono le onde: a 489 metri al secondo il campo non è più incomprimibile.</figcaption>
+      </figure>
+      <div class="viste">
+        <figure class="vista scura">
+          <img src="assets/urto-a-640.webp" srcset="assets/urto-a-640.webp 640w, assets/urto-a-1000.webp 1000w" sizes="(min-width: 620px) 30vw, 45vw" alt="Strutture vorticose in volume attorno al corpo, viste di lato." loading="lazy" decoding="async">
+          <figcaption>strutture in volume</figcaption>
+        </figure>
+        <figure class="vista scura">
+          <img src="assets/urto-b-640.webp" srcset="assets/urto-b-640.webp 640w, assets/urto-b-1000.webp 1000w" sizes="(min-width: 620px) 30vw, 45vw" alt="Le stesse strutture vorticose viste più da vicino lungo la fusoliera." loading="lazy" decoding="async">
+          <figcaption>strutture da vicino</figcaption>
+        </figure>
+      </div>
+      </div>
+      <div class="caso-scheda">
+        <p>Calcolo comprimibile con fondo scala a 489 metri al secondo, cioè circa Mach 1,4 in aria standard. Le due viste secondarie mostrano le strutture vorticose in volume, la principale il piano di contorno con le onde.</p>
+        <div class="tabella-avvolta">
+          <table class="dati">
+            <caption class="occhiello" style="margin-bottom:var(--s3)">Scheda del caso</caption>
+            <tbody>
+            <tr><th scope="row">Geometria</th><td>corpo affusolato con impennaggi</td></tr>
+            <tr><th scope="row">Campo</th><td>modulo della velocità <span class="mono">[m/s]</span></td></tr>
+            <tr><th scope="row">Scala colore</th><td>arcobaleno</td></tr>
+            <tr><th scope="row">Intervallo</th><td><span class="mono">0,0 … 4,89e+02</span></td></tr>
+            <tr><th scope="row">Solutore</th><td>Ansys 2026 R1</td></tr>
+            <tr><th scope="row">Griglia</th><td><span class="segnaposto">DA COMPILARE</span></td></tr>
+            <tr><th scope="row">Condizioni</th><td><span class="segnaposto">DA COMPILARE</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </article>
+  </div>
+</section>
+
+<!-- ============================================ 05 come si lavora -->
+<section id="metodo" class="fascia fascia-alt" aria-labelledby="t-met">
+  <div class="guida">
+    <p class="occhiello"><span class="numero-sezione">05</span> Come si lavora</p>
+    <div class="testa-sezione"><h2 id="t-met" data-anima="su">Prima si decide come si verifica. Poi si calcola.</h2></div>
+    <div class="passi">
+      <div class="passo" data-anima="passo"><h3>Guardo la geometria e la domanda.</h3><div><p>Mi mandi il CAD e mi dici cosa devi decidere. Ti rispondo dicendo se la simulazione può rispondere a quella domanda, con quale fisica, e con che margine ci si può aspettare. Se la risposta è no, te lo scrivo.</p><span class="serve">Da te serve: STEP o Parasolid, e una riga sulla decisione.</span></div></div>
+      <div class="passo" data-anima="passo"><h3>Fissiamo il riferimento.</h3><div><p>Prima di girare qualsiasi cosa stabiliamo con cosa confronteremo il risultato: un tuo dato di campo, una prova in laboratorio, una correlazione di letteratura, un caso di riferimento pubblicato. Senza un termine di paragone, il risultato è un'opinione colorata.</p><span class="serve">Da te serve: qualsiasi misura tu abbia già, anche vecchia.</span></div></div>
+      <div class="passo" data-anima="passo"><h3>Griglia e modello, scritti.</h3><div><p>Numero di celle, raffinamento a parete, y+ obiettivo, modello di turbolenza, schemi. Sono decisioni, e le decisioni si scrivono prima, non si giustificano dopo.</p><span class="serve">Da te serve: una firma sul documento di setup, o un'obiezione.</span></div></div>
+      <div class="passo" data-anima="passo"><h3>Calcolo, e ti mando i residui.</h3><div><p>Ti arriva il risultato e la strada per arrivarci. Se non converge, lo vedi anche tu.</p><span class="serve">Da te serve: niente. Questa parte è mia.</span></div></div>
+      <div class="passo" data-anima="passo"><h3>Confronto e scarto.</h3><div><p>Il numero finale arriva con accanto la distanza dal riferimento fissato al passo due, e cosa la spiega.</p><span class="serve">Da te serve: mezz'ora, per andarci sopra insieme.</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ 06 scala di ingaggio -->
+<section id="ingaggio" class="fascia" aria-labelledby="t-ing">
+  <div class="guida">
+    <p class="occhiello"><span class="numero-sezione">06</span> Scala di ingaggio</p>
+    <div class="testa-sezione"><h2 id="t-ing" data-anima="su">Quanto dura, cosa esce, in quattro scaglioni.</h2></div>
+    <p class="intro-sezione" data-anima="su">Nel settore quasi nessuno lo scrive. Serve a te per capire dove cade il tuo caso, e a me per non farti perdere tempo se cade fuori.</p>
+    <div class="scala">
+      <div class="scaglione" data-anima="colonna">
+        <span class="durata">≈ 1 giorno</span><h3>Lettura della geometria</h3><p>Guardo il CAD e la domanda e ti dico se la simulazione può rispondere.</p>
+        <ul><li>risposta scritta, non a voce</li><li>la fisica proposta e il margine atteso</li><li>oppure un no, con il motivo</li></ul>
+      </div>
+      <div class="scaglione" data-anima="colonna">
+        <span class="durata">1 · 3 settimane</span><h3>Un caso singolo</h3><p>Una geometria, una condizione, una risposta con il suo scarto.</p>
+        <ul><li>risultato e distanza dal riferimento</li><li>setup completo e residui</li><li>mezz'ora di chiamata sui numeri</li></ul>
+      </div>
+      <div class="scaglione" data-anima="colonna">
+        <span class="durata">1 · 3 mesi</span><h3>Una campagna</h3><p>Più varianti o più condizioni, confrontate nella stessa unità.</p>
+        <ul><li>matrice dei casi girati</li><li>confronto e raccomandazione</li><li>tutti i setup, riproducibili</li></ul>
+      </div>
+      <div class="scaglione" data-anima="colonna">
+        <span class="durata">continuativo</span><h3>Il reparto che non hai</h3><p>Capacità ricorrente, con il tuo modo di scrivere i casi.</p>
+        <ul><li>monte ore concordato</li><li>setup scritti come li scriveresti tu</li><li>formazione al tuo team, se la vuoi</li></ul>
+      </div>
+    </div>
+    <p style="margin-top:var(--s5);font-size:var(--t--1);color:var(--inchiostro-2)">I prezzi non sono in pagina. Te li dico nella prima risposta, insieme al perimetro, prima che tu abbia speso qualcosa.</p>
+  </div>
+</section>
+
+<!-- ============================================ 07 chi firma -->
+<section id="firma" class="fascia fascia-alt" aria-labelledby="t-firma">
+  <div class="guida">
+    <p class="occhiello"><span class="numero-sezione">07</span> Chi firma il calcolo</p>
+    <div class="testa-sezione"><h2 id="t-firma" data-anima="su">Una persona sola, con il suo nome sopra.</h2></div>
+    <div class="firma">
+      <img class="ritratto" src="assets/ritratto.webp" alt="Ritratto di Sebastiano Raggi" width="168" height="168" loading="lazy" decoding="async">
+      <div class="firma-testo">
+        <p><strong>Sono Sebastiano Raggi</strong>, ingegnere meccanico, e Gradient Numerics è la mia struttura dentro Firmamento Technologies.</p><p>Ho una borsa di ricerca in aeroacustica computazionale al <strong>DICCA dell'Università di Genova</strong>: simulazioni non stazionarie di getti impattanti per il raffreddamento dell'elettronica, per il centro di ricerca europeo di un produttore di elettronica di consumo. Mesh in Ennova CFD, post-processing spettrale in Python e ParaView.</p><p>Ho firmato <em>Aerospike: a hybrid parametric-adjoint approach for the optimal design</em>, con R. Carbone, J. E. Guerrero Rivas e J. O. Pralits, su <em>Aerotecnica Missili e Spazio</em>. Da lì viene il metodo aggiunto che uso per l'ottimizzazione di forma.</p><p>Ho guidato la squadra che alla <strong>IMechE UAS Challenge</strong>, nel Regno Unito, è arrivata <span class="mono">sesta su quarantadue</span> università nel 2025, vincendo il premio Best Newcomer, e <span class="mono">quarta su cinquantaquattro</span> nel 2026. Quindici ingegneri da coordinare, un velivolo da progettare e da far volare davvero.</p><p>Laurea triennale in ingegneria meccanica a Genova, <span class="mono">102 su 110</span>, con una tesi sperimentale sull'ottimizzazione di uno strut aerospike. Magistrale in ingegneria aeronautica in corso.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ 08 cosa ricevi -->
+<section id="consegna" class="fascia" aria-labelledby="t-cons">
+  <div class="guida">
+    <p class="occhiello"><span class="numero-sezione">08</span> Cosa ricevi</p>
+    <div class="testa-sezione"><h2 id="t-cons" data-anima="su">Il risultato, e tutto quello che serve per non fidarsi sulla parola.</h2></div>
+    <dl class="consegna">
+      <div data-anima="riga"><dt>I numeri</dt><dd>Forze, coefficienti, portate, temperature, tensioni, livelli sonori: quello che serve alla decisione, in tabella, con le unità.</dd></div>
+      <div data-anima="riga"><dt>Lo scarto</dt><dd>La distanza dal riferimento concordato al passo due, e cosa la spiega.</dd></div>
+      <div data-anima="riga"><dt>Il setup</dt><dd>Il caso completo: griglia, condizioni al contorno, schemi, versione del solutore. Se domani vuoi rifarlo con qualcun altro, puoi.</dd></div>
+      <div data-anima="riga"><dt>I residui</dt><dd>Le curve di convergenza, non la frase il caso è converguto.</dd></div>
+      <div data-anima="riga"><dt>Le figure</dt><dd>Con la barra colore, la scala e la grandezza sempre in vista. Un'immagine senza scala non è un risultato.</dd></div>
+      <div data-anima="riga"><dt>I limiti</dt><dd>Dove il modello vale e dove smette di valere, scritto prima che tu lo scopra da solo.</dd></div>
+      <div data-anima="riga"><dt>Una chiamata</dt><dd>Mezz'ora per andare sopra i numeri insieme, in cui puoi chiedermi perché ho scelto quel modello e non un altro.</dd></div>
+    </dl>
+  </div>
+</section>
+
+<!-- ============================================ 09 manda la geometria -->
+<section id="manda" class="fascia chiusura" aria-labelledby="t-manda">
+  <div class="guida">
+    <p class="occhiello"><span class="numero-sezione">09</span> Manda la geometria</p>
+    <div class="testa-sezione"><h2 id="t-manda" data-anima="su">Un errore di progetto costa meno oggi che dopo il primo stampo.</h2></div>
+    <p class="intro" data-anima="su" style="margin-top:var(--s5)">Mandami il CAD e la domanda a cui devi rispondere. Guardo se la simulazione può rispondere, con quale fisica, e con che margine. Se non può, te lo dico e non ti costa niente.</p>
+    <form class="modulo" id="modulo" novalidate>
+      <div class="campo">
+        <label for="email">La tua email</label>
+        <input type="email" id="email" name="email" required autocomplete="email" inputmode="email" placeholder="nome@azienda.it">
+        <p class="errore" id="err-email" aria-live="polite"></p>
+      </div>
+      <div class="campo">
+        <label for="domanda">Cosa devi decidere</label>
+        <textarea id="domanda" name="domanda" required placeholder="Devo scegliere fra due geometrie di girante e sapere quale cavita prima."></textarea>
+        <p class="errore" id="err-domanda" aria-live="polite"></p>
+      </div>
+      <div class="campo">
+        <label for="file">La geometria <span class="facolt">(facoltativo)</span></label>
+        <input type="file" id="file" name="file" accept=".step,.stp,.iges,.igs,.stl,.x_t,.x_b" hidden>
+        <button type="button" class="zona-file" id="zona-file" aria-describedby="aiuto-file">
+          <span class="vuoto" id="file-vuoto">Nessun file. STEP, IGES, STL, Parasolid, fino a 200 MB.</span>
+          <span class="pieno" id="file-pieno" hidden></span>
+        </button>
+        <p class="aiuto" id="aiuto-file">Se pesa di più, mettimi un link qui sotto.</p>
+        <p class="errore" id="err-file" aria-live="polite"></p>
+      </div>
+      <div class="campo">
+        <label for="link">Un link, se il file è grosso <span class="facolt">(facoltativo)</span></label>
+        <input type="url" id="link" name="link" placeholder="https://" inputmode="url">
+      </div>
+      <div><button type="submit" class="btn btn-primario" id="invia">Manda la geometria</button></div>
+      <p class="errore" id="err-generale" aria-live="assertive"></p>
+    </form>
+    <div class="esito" id="esito" role="status" aria-live="polite"></div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================================ cartiglio -->
+<footer class="cartiglio">
+  <div class="guida">
+    <dl class="cartiglio-griglia">
+      <div class="casella">
+        <dt>Studio</dt>
+        <dd><b>Gradient Numerics</b><br>Simulazione multifisica. Fluidi, strutture, termica, ottimizzazione. Genova.</dd>
+      </div>
+      <div class="casella">
+        <dt>Recapito</dt>
+        <dd><a href="mailto:[[EMAIL]]"><span class="segnaposto">EMAIL DA METTERE</span></a></dd>
+      </div>
+      <div class="casella">
+        <dt>Ente</dt>
+        <dd>Opera dentro Firmamento Technologies.</dd>
+      </div>
+      <div class="casella">
+        <dt>Revisione</dt>
+        <dd class="mono">rev. 01 · 2026</dd>
+      </div>
+      <div class="casella larga">
+        <dt>Lingua</dt>
+        <dd><nav class="lingue-piede" aria-label="Scegli la lingua"><ul><li><a href="/" hreflang="it" lang="it" aria-current="true"><span class="mono">IT</span> Italiano</a></li></ul></nav></dd>
+      </div>
+      <div class="casella larga">
+        <dt>Fonti</dt>
+        <dd class="fonti">Il benchmark dell'ugello FDA e gli scarti citati vengono da <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5464577/" rel="noopener">Use of the FDA nozzle model to illustrate validation techniques in CFD simulations</a>, PLOS ONE, 2017. Le quote della geometria vengono da <a href="https://link.springer.com/article/10.1007/s13239-012-0087-5" rel="noopener">Assessment of CFD Performance in Simulations of an Idealized Medical Device</a>, Cardiovascular Engineering and Technology, 2012. La citazione di Doug McLean viene dal <a href="https://blogs.sw.siemens.com/simcenter/Colorful-Fluid-Dynamics-Say-it-again-I-dare-you/" rel="noopener">blog Simcenter di Siemens</a>.</dd>
+      </div>
+    </dl>
+  </div>
+</footer>
+
+<script type="application/json" id="testi-ui">{"err_email":"Serve un indirizzo valido, altrimenti non posso risponderti.","err_domanda":"Scrivimi in una riga cosa devi decidere: mi serve per capire se posso rispondere.","err_file_grande":"Il file supera i {mb} MB. Mandamelo con un link nel campo qui sotto.","invio":"Sto caricando. Non chiudere la pagina.","posta_titolo":"Ho aperto il tuo programma di posta.","posta_con_file":"Il messaggio è già scritto: allega {file} e premi invia.","posta_senza_file":"Il messaggio è già scritto: premi invia.","posta_coda":"Se non si è aperto niente, scrivimi a {email}.","ok_titolo":"Ricevuto.","ok_testo":"Guardo la geometria e ti rispondo io, non un modulo.","err_generale":"Non è partito. Riprova, oppure scrivimi direttamente a {email}.","mail_oggetto":"Geometria da valutare","mail_link":"Link al file:","mail_allego":"Allego {file}, da allegare a mano a questa email.","mail_rispondi":"Rispondimi a:"}</script>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
